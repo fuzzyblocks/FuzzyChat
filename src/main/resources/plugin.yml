@@ -1,0 +1,20 @@
+name: HoeChat
+main: be.darnell.mc.HoeChat.HoeChat
+softdepend: [ HoeLogger, bPermissions, Privileges ]
+version: 12w23a
+author: cedeel
+description: Chat plugin for bPermissions
+permissions:
+  hoechat.chat.color:
+    description: Colorize messages
+  hoechat.chat.magic:
+    description: Randomize messages
+  hoechat.chat.stylize:
+    description: Stylize messages
+  hoechat.admin:
+    description: Manage prefixes and suffixes
+    default: op
+commands:
+  hc:
+    description: Management command
+    permission: hoechat.admin
