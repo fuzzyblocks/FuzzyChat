@@ -24,10 +24,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package be.darnell.mc.HoeChat;
+package be.darnell.mc.FuzzyChat;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -39,9 +40,9 @@ import org.bukkit.plugin.java.JavaPlugin;
  * 
  * @author cedeel
  */
-public class HoeChat extends JavaPlugin {
+public class FuzzyChat extends JavaPlugin {
   protected static final Logger log = Logger.getLogger("Minecraft");
-  protected HoeChatListener listener;
+  protected FuzzyChatListener listener;
   protected MetaDataProvider provider;
 
   @Override
@@ -57,7 +58,7 @@ public class HoeChat extends JavaPlugin {
     if(pr.equalsIgnoreCase("auto")) provider = resolveProvider();
     else provider = new InternalProvider(this);
 
-    this.listener = new HoeChatListener(config, provider);
+    this.listener = new FuzzyChatListener(config, provider);
     getServer().getPluginManager().registerEvents(listener, this);
     log.info(pdf.getName() + " v" + pdf.getVersion() + " started.");
 
@@ -79,15 +80,17 @@ public class HoeChat extends JavaPlugin {
     
     StringBuilder ms = new StringBuilder();
     for(int i = 2; i < args.length; i++) {
-      ms.append(args[i]);
+      ms.append(args[i]).append(" ");
     }
-    String metadata = ms.toString();
+    String metadata = ms.toString().trim();
     
     String UnsupportedBackend = "Operation not supported with current backend.";
     if(cmd.equalsIgnoreCase("pp")) {
       try {
         String player = getPlayerNameString(args[1]);
         provider.setPlayerPrefix(player, metadata);
+        sender.sendMessage(player + "'s prefix set to: " + ChatColor.translateAlternateColorCodes("&".charAt(0),
+                provider.getPrefix(getServer().getOfflinePlayer(player))));
       } catch (UnsupportedOperationException e) {
         sender.sendMessage(UnsupportedBackend);
         return false;
@@ -99,6 +102,8 @@ public class HoeChat extends JavaPlugin {
       try {
         String player = getPlayerNameString(args[1]);
         provider.setPlayerSuffix(player, metadata);
+        sender.sendMessage(player + "'s suffix set to: " + ChatColor.translateAlternateColorCodes("&".charAt(0),
+                provider.getSuffix(getServer().getOfflinePlayer(player))));
       } catch (UnsupportedOperationException e) {
         sender.sendMessage(UnsupportedBackend);
         return false;
@@ -113,6 +118,7 @@ public class HoeChat extends JavaPlugin {
         sender.sendMessage(UnsupportedBackend);
         return false;
       }
+      return true;
     }
     
     else if(cmd.equalsIgnoreCase("gs")) {
@@ -122,20 +128,24 @@ public class HoeChat extends JavaPlugin {
         sender.sendMessage(UnsupportedBackend);
         return false;
       }
+      return true;
     }
     return false;
   }
   
   private String getPlayerNameString(String s) {
-    String result = getServer().getPlayer(s).getName();
-    if(result != null) return result;
-    else return s;
+    try {
+      return getServer().getPlayer(s).getName();
+    } catch (NullPointerException e) {
+      // Player not online.
+    }
+    return s;
   }
   
   private MetaDataProvider resolveProvider() {
     Plugin bp = getServer().getPluginManager().getPlugin("bPermissions");
     if(bp != null && bp.isEnabled()) return new BananaProvider();
-    log.log(Level.WARNING, "[HoeChat] No supported external metadata provider found. Falling back to internal.");
+    log.log(Level.WARNING, "[FuzzyChat] No supported external metadata provider found. Falling back to internal.");
     return new InternalProvider(this);
   }
 }

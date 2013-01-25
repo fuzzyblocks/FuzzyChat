@@ -1,20 +1,20 @@
-name: HoeChat
-main: be.darnell.mc.HoeChat.HoeChat
-softdepend: [ HoeLogger, bPermissions, Privileges ]
-version: 12w23a
+name: FuzzyChat
+main: be.darnell.mc.FuzzyChat.FuzzyChat
+softdepend: [ FuzzyLog, bPermissions, Privileges ]
+version: 1.0.1
 author: cedeel
-description: Chat plugin for bPermissions
+description: Chat formatting plugin for Bukkit
 permissions:
-  hoechat.chat.color:
+  fuzzychat.chat.color:
     description: Colorize messages
-  hoechat.chat.magic:
+  fuzzychat.chat.magic:
     description: Randomize messages
-  hoechat.chat.stylize:
+  fuzzychat.chat.stylize:
     description: Stylize messages
-  hoechat.admin:
+  fuzzychat.admin:
     description: Manage prefixes and suffixes
     default: op
 commands:
   hc:
     description: Management command
-    permission: hoechat.admin
+    permission: fuzzychat.admin

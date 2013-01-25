@@ -24,47 +24,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package be.darnell.mc.HoeChat;
+package be.darnell.mc.FuzzyChat;
 
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
-import de.bananaco.bpermissions.api.ApiLayer;
-import de.bananaco.bpermissions.api.util.CalculableType;
+public interface MetaDataProvider {
 
-public final class BananaProvider implements MetaDataProvider {
-
-	@Override
-	public String getPrefix(Player player) {
-		return ApiLayer.getValue(player.getWorld().getName(), CalculableType.USER, player.getName(), "prefix");
-	}
-
-	@Override
-	public String getSuffix(Player player) {
-		return ApiLayer.getValue(player.getWorld().getName(), CalculableType.USER, player.getName(), "suffix");
-	}
-
-	@Override
-	public void setPlayerPrefix(String name, String prefix) {
-		throw new UnsupportedOperationException("Not currently supported."); 
-		
-	}
-
-	@Override
-	public void setPlayerSuffix(String name, String suffix) {
-		throw new UnsupportedOperationException("Not currently supported");
-		
-	}
-
-	@Override
-	public void setGroupPrefix(String name, String prefix) {
-		throw new UnsupportedOperationException("Not currently supported");
-		
-	}
-
-	@Override
-	public void setGroupSuffix(String name, String suffix) {
-		throw new UnsupportedOperationException("Not currently supported");
-		
-	}
-
+	public String getPrefix(OfflinePlayer player);
+	public String getSuffix(OfflinePlayer player);
+	
+	public void setPlayerPrefix(String name, String prefix) throws UnsupportedOperationException;
+	public void setPlayerSuffix(String name, String suffix) throws UnsupportedOperationException;
+	
+	public void setGroupPrefix(String name, String prefix) throws UnsupportedOperationException;
+	public void setGroupSuffix(String name, String suffix) throws UnsupportedOperationException;
 }

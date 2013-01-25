@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>be.darnell</groupId>
-    <artifactId>HoeChat</artifactId>
+    <artifactId>FuzzyChat</artifactId>
     <packaging>jar</packaging>
     <version>1.1</version>
-    <name>HoeChat</name>
+    <name>FuzzyChat</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.number>DEV</project.build.number>
@@ -28,9 +28,9 @@
 	</repository>
     </repositories>
     <scm>
-        <developerConnection>scm:git:git@github.com:darnell/URIEnforcer.git</developerConnection>
-        <connection>scm:git:git://github.com/cedeel/HoeChat.git</connection>
-        <url>https://github.com/cedeel/HoeChat</url>
+        <developerConnection>scm:git:git@github.com:darnell/FuzzyChat.git</developerConnection>
+        <connection>scm:git:git://github.com/cedeel/FuzzyChat.git</connection>
+        <url>https://github.com/cedeel/FuzzyChat</url>
     </scm>
     <profiles>
         <profile>
@@ -87,7 +87,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.4.2-R0.2-SNAPSHOT</version>
+            <version>1.4.6-R0.4-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
         <!-- End Bukkit -->
@@ -105,7 +105,7 @@
 	</dependency>
 	<dependency>
 	    <groupId>be.darnell</groupId>
-	    <artifactId>HoeLogger</artifactId>
+	    <artifactId>FuzzyLog</artifactId>
 	    <version>1.1</version>
 	</dependency>
     </dependencies>

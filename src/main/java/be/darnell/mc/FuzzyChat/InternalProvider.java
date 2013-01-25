@@ -24,38 +24,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package be.darnell.mc.HoeChat;
+package be.darnell.mc.FuzzyChat;
 
+import de.bananaco.bpermissions.api.ApiLayer;
+import de.bananaco.bpermissions.api.util.CalculableType;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import net.krinsoft.privileges.Privileges;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import de.bananaco.bpermissions.api.ApiLayer;
-import de.bananaco.bpermissions.api.util.CalculableType;
 
 public final class InternalProvider implements MetaDataProvider {
 
   private HashMap<String, Meta> groups;
   private HashMap<String, Meta> users;
-  private HoeChat plugin;
+  private FuzzyChat plugin;
   private FileConfiguration usersConfig, groupsConfig;
 
-  public InternalProvider(HoeChat plugin) {
+  public InternalProvider(FuzzyChat plugin) {
     this.plugin = plugin;
     loadGroups();
     loadUsers();
   }
 
   @Override
-  public String getPrefix(Player player) {
+  public String getPrefix(OfflinePlayer player) {
     if(users.containsKey(player.getName().toLowerCase()))
       return users.get(player.getName().toLowerCase()).prefix;
     
@@ -66,7 +67,7 @@ public final class InternalProvider implements MetaDataProvider {
   }
 
   @Override
-  public String getSuffix(Player player) {
+  public String getSuffix(OfflinePlayer player) {
     if(users.containsKey(player.getName().toLowerCase()))
       return users.get(player.getName().toLowerCase()).suffix;
     
@@ -128,14 +129,19 @@ public final class InternalProvider implements MetaDataProvider {
     saveGroups();
   }
 
-  private String getUserGroup(Player p) {
+  private String getUserGroup(OfflinePlayer p) {
     Plugin bp = plugin.getServer().getPluginManager().getPlugin("bPermissions");
     Plugin priv = plugin.getServer().getPluginManager().getPlugin("Privileges");
     if(bp != null && bp.isEnabled()) {
-      return ApiLayer.getGroups(p.getWorld().getName(), CalculableType.USER, p.getName())[0];
+      try {
+        Player pl = Bukkit.getPlayer(p.getName());
+        return ApiLayer.getGroups(pl.getWorld().getName(), CalculableType.USER, p.getName())[0];
+      } catch (NullPointerException e) { }
+      return ApiLayer.getGroups(Bukkit.getWorlds().get(0).getName(), CalculableType.USER, p.getName())[0];
+      
     }
     if(priv != null && priv.isEnabled()) {
-      return ((Privileges) priv).getGroupManager().getGroup((OfflinePlayer) p).getName();
+      return ((Privileges) priv).getGroupManager().getGroup(p).getName();
     }
     return "default";
   }
@@ -147,7 +153,7 @@ public final class InternalProvider implements MetaDataProvider {
       try {
         usersFile.createNewFile();
       } catch (IOException e) {
-        HoeChat.log.log(Level.SEVERE, "[HoeChat] Could not create users.yml file.");
+        FuzzyChat.log.log(Level.SEVERE, "[FuzzyChat] Could not create users.yml file.");
         return;
       }
       
@@ -168,7 +174,7 @@ public final class InternalProvider implements MetaDataProvider {
       try {
         groupsFile.createNewFile();
       } catch (IOException e) {
-        HoeChat.log.log(Level.SEVERE, "[HoeChat] Could not create users.yml file.");
+        FuzzyChat.log.log(Level.SEVERE, "[FuzzyChat] Could not create users.yml file.");
         return;
       }
       
@@ -194,7 +200,7 @@ public final class InternalProvider implements MetaDataProvider {
     try {
       fc.save(usersFile);
     } catch(IOException e) {
-      HoeChat.log.log(Level.SEVERE, "[HoeChat] Failed to write to users.yml. Changes not saved!");
+      FuzzyChat.log.log(Level.SEVERE, "[FuzzyChat] Failed to write to users.yml. Changes not saved!");
     }
   }
   
@@ -210,7 +216,7 @@ public final class InternalProvider implements MetaDataProvider {
     try {
       fc.save(groupsFile);
     } catch(IOException e) {
-      HoeChat.log.log(Level.SEVERE, "[HoeChat] Failed to write to users.yml. Changes not saved!");
+      FuzzyChat.log.log(Level.SEVERE, "[FuzzyChat] Failed to write to users.yml. Changes not saved!");
     }
   }
 

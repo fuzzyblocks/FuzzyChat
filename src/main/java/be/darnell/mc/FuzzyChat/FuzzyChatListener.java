@@ -24,10 +24,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package be.darnell.mc.HoeChat;
+package be.darnell.mc.FuzzyChat;
 
-import be.darnell.mc.HoeLogger.HoeLogger;
-import be.darnell.mc.HoeLogger.LogFacility;
+import be.darnell.mc.FuzzyLog.FuzzyLog;
+import be.darnell.mc.FuzzyLog.LogFacility;
 import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -41,7 +41,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
  *
  * @author cedeel
  */
-public class HoeChatListener implements Listener {
+public class FuzzyChatListener implements Listener {
 
   protected static Pattern chatColorPattern = Pattern.compile("&([a-fA-F0-9])");
   protected static Pattern chatMagicPattern = Pattern.compile("&([k])", Pattern.CASE_INSENSITIVE);
@@ -55,18 +55,18 @@ public class HoeChatListener implements Listener {
   protected String optionMessageFormat = "message-format";
   private final MetaDataProvider meta;
 
-  public HoeChatListener(FileConfiguration config, MetaDataProvider meta) {
+  public FuzzyChatListener(FileConfiguration config, MetaDataProvider meta) {
 	  this.meta = meta;
     messageFormat = config.getString(optionMessageFormat, this.messageFormat);
     useLogger = config.getBoolean("useLogger", useLogger);
     if (useLogger) {
-      if (Bukkit.getPluginManager().getPlugin("HoeLogger") != null) {
-        HoeLogger.addFacility("CHAT");
-        logger = HoeLogger.getFacility("CHAT");
-        Bukkit.getLogger().info("[HoeChat] Got logger: " + logger.toString());
+      if (Bukkit.getPluginManager().getPlugin("FuzzyLog") != null) {
+        FuzzyLog.addFacility("CHAT");
+        logger = FuzzyLog.getFacility("CHAT");
+        Bukkit.getLogger().info("[FuzzyChat] Got logger: " + logger.toString());
       } else {
         useLogger = false;
-        Bukkit.getLogger().warning("HoeChat: useLogger set to true, but HoeLogger not found.");
+        Bukkit.getLogger().warning("FuzzyChat: useLogger set to true, but FuzzyLog not found.");
       }
 
     }
