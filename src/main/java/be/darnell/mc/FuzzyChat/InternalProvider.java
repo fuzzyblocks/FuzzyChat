@@ -26,6 +26,7 @@
  */
 package be.darnell.mc.FuzzyChat;
 
+import com.avaje.ebean.LogLevel;
 import de.bananaco.bpermissions.api.ApiLayer;
 import de.bananaco.bpermissions.api.util.CalculableType;
 import java.io.File;
@@ -185,10 +186,14 @@ public final class InternalProvider implements MetaDataProvider {
         }
         users = new HashMap<String, Meta>();
         usersConfig = YamlConfiguration.loadConfiguration(usersFile);
-        ConfigurationSection userConfig = usersConfig.getConfigurationSection("users");
-        for (String user : userConfig.getKeys(false)) {
-            ConfigurationSection meta = userConfig.getConfigurationSection(user);
-            users.put(user.toLowerCase(), new Meta(meta.getString("prefix", ""), meta.getString("suffix", "")));
+        try {
+            ConfigurationSection userConfig = usersConfig.getConfigurationSection("users");
+            for (String user : userConfig.getKeys(false)) {
+                ConfigurationSection meta = userConfig.getConfigurationSection(user);
+                users.put(user.toLowerCase(), new Meta(meta.getString("prefix", ""), meta.getString("suffix", "")));
+            }
+        } catch (NullPointerException e) {
+            plugin.getLogger().log(Level.WARNING, "[FuzzyChat] Users file empty. No groups loaded.");
         }
     }
 
@@ -206,10 +211,14 @@ public final class InternalProvider implements MetaDataProvider {
         }
         groups = new HashMap<String, Meta>();
         groupsConfig = YamlConfiguration.loadConfiguration(groupsFile);
-        ConfigurationSection groupConfig = groupsConfig.getConfigurationSection("groups");
-        for (String group : groupConfig.getKeys(false)) {
-            ConfigurationSection meta = groupConfig.getConfigurationSection(group);
-            groups.put(group.toLowerCase(), new Meta(meta.getString("prefix", ""), meta.getString("suffix", "")));
+        try {
+            ConfigurationSection groupConfig = groupsConfig.getConfigurationSection("groups");
+            for (String group : groupConfig.getKeys(false)) {
+                ConfigurationSection meta = groupConfig.getConfigurationSection(group);
+                groups.put(group.toLowerCase(), new Meta(meta.getString("prefix", ""), meta.getString("suffix", "")));
+            }
+        } catch (NullPointerException e) {
+            plugin.getLogger().log(Level.WARNING, "[FuzzyChat] Groups file empty. No groups loaded.");
         }
     }
 
