@@ -52,6 +52,7 @@ public class FuzzyChat extends JavaPlugin {
     FileConfiguration config = this.getConfig();
 
     config.addDefaults(getConfig());
+    this.saveDefaultConfig();
 
     // Metadata provider resolution
     String pr = config.getString("provider", "internal");
