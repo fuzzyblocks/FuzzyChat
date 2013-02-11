@@ -14,7 +14,19 @@ permissions:
   fuzzychat.admin:
     description: Manage prefixes and suffixes
     default: op
+  fuzzychat.setprefix:
+    description: Assign prefixes
+    default: op
+  fuzzychat.setsuffix:
+    description: Assign suffixes
+    default: op
 commands:
   hc:
     description: Management command
     permission: fuzzychat.admin
+  setprefix:
+    description: Assign prefixes
+    permission: fuzzychat.setprefix
+  setsuffix:
+    description: Assign suffixes
+    permission: fuzzychat.setsuffix

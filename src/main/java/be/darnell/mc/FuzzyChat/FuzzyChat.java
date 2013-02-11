@@ -26,126 +26,63 @@
  */
 package be.darnell.mc.FuzzyChat;
 
+import be.darnell.mc.FuzzyChat.commands.SetPrefix;
+import be.darnell.mc.FuzzyChat.commands.SetSuffix;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
- * 
+ *
  * @author cedeel
  */
 public class FuzzyChat extends JavaPlugin {
-  protected static final Logger log = Logger.getLogger("Minecraft");
-  protected FuzzyChatListener listener;
-  protected MetaDataProvider provider;
 
-  @Override
-  public void onEnable() {
-    PluginDescriptionFile pdf = this.getDescription();
-    
-    FileConfiguration config = this.getConfig();
+    protected static final Logger log = Logger.getLogger("Minecraft");
+    protected FuzzyChatListener listener;
+    public MetaDataProvider provider;
 
-    config.addDefaults(getConfig());
+    @Override
+    public void onEnable() {
+        PluginDescriptionFile pdf = this.getDescription();
 
-    // Metadata provider resolution
-    String pr = config.getString("provider", "internal");
-    if(pr.equalsIgnoreCase("auto")) provider = resolveProvider();
-    else provider = new InternalProvider(this);
+        FileConfiguration config = this.getConfig();
 
-    this.listener = new FuzzyChatListener(config, provider);
-    getServer().getPluginManager().registerEvents(listener, this);
-    log.info(pdf.getName() + " v" + pdf.getVersion() + " started.");
+        config.addDefaults(getConfig());
 
-    this.saveConfig();
-  }
+        // Metadata provider resolution
+        String pr = config.getString("provider", "internal");
+        if (pr.equalsIgnoreCase("auto")) {
+            provider = resolveProvider();
+        } else {
+            provider = new InternalProvider(this);
+        }
 
-  @Override
-  public void onDisable() {
-    PluginDescriptionFile pdf = this.getDescription();
-    log.info(pdf.getName() + " v" + pdf.getVersion() + " stopped.");
-  }
-  
-  @Override
-  public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if(!(args.length > 2))
-      return false;
-    
-    String cmd = args[0];
-    
-    StringBuilder ms = new StringBuilder();
-    for(int i = 2; i < args.length; i++) {
-      ms.append(args[i]).append(" ");
+        this.listener = new FuzzyChatListener(config, provider);
+        getServer().getPluginManager().registerEvents(listener, this);
+        log.info(pdf.getName() + " v" + pdf.getVersion() + " started.");
+
+        this.saveConfig();
+
+        this.getCommand("setprefix").setExecutor(new SetPrefix(this));
+        this.getCommand("setsuffix").setExecutor(new SetSuffix(this));
     }
-    String metadata = ms.toString().trim();
-    
-    String UnsupportedBackend = "Operation not supported with current backend.";
-    if(cmd.equalsIgnoreCase("pp")) {
-      try {
-        String player = getPlayerNameString(args[1]);
-        provider.setPlayerPrefix(player, metadata);
-        sender.sendMessage(player + "'s prefix set to: " + ChatColor.translateAlternateColorCodes("&".charAt(0),
-                provider.getPrefix(getServer().getOfflinePlayer(player))));
-      } catch (UnsupportedOperationException e) {
-        sender.sendMessage(UnsupportedBackend);
-        return false;
-      }
-      return true;
+
+    @Override
+    public void onDisable() {
+        PluginDescriptionFile pdf = this.getDescription();
+        log.info(pdf.getName() + " v" + pdf.getVersion() + " stopped.");
     }
-    
-    else if(cmd.equalsIgnoreCase("ps")) {
-      try {
-        String player = getPlayerNameString(args[1]);
-        provider.setPlayerSuffix(player, metadata);
-        sender.sendMessage(player + "'s suffix set to: " + ChatColor.translateAlternateColorCodes("&".charAt(0),
-                provider.getSuffix(getServer().getOfflinePlayer(player))));
-      } catch (UnsupportedOperationException e) {
-        sender.sendMessage(UnsupportedBackend);
-        return false;
-      }
-      return true;
+
+    private MetaDataProvider resolveProvider() {
+        Plugin bp = getServer().getPluginManager().getPlugin("bPermissions");
+        if (bp != null && bp.isEnabled()) {
+            return new BananaProvider();
+        }
+        log.log(Level.WARNING, "[FuzzyChat] No supported external metadata provider found. Falling back to internal.");
+        return new InternalProvider(this);
     }
-    
-    else if(cmd.equalsIgnoreCase("gp")) {
-      try {
-        provider.setGroupPrefix(args[1], metadata);
-      } catch (UnsupportedOperationException e) {
-        sender.sendMessage(UnsupportedBackend);
-        return false;
-      }
-      return true;
-    }
-    
-    else if(cmd.equalsIgnoreCase("gs")) {
-      try {
-        provider.setGroupSuffix(args[1], metadata);
-      } catch (UnsupportedOperationException e) {
-        sender.sendMessage(UnsupportedBackend);
-        return false;
-      }
-      return true;
-    }
-    return false;
-  }
-  
-  private String getPlayerNameString(String s) {
-    try {
-      return getServer().getPlayer(s).getName();
-    } catch (NullPointerException e) {
-      // Player not online.
-    }
-    return s;
-  }
-  
-  private MetaDataProvider resolveProvider() {
-    Plugin bp = getServer().getPluginManager().getPlugin("bPermissions");
-    if(bp != null && bp.isEnabled()) return new BananaProvider();
-    log.log(Level.WARNING, "[FuzzyChat] No supported external metadata provider found. Falling back to internal.");
-    return new InternalProvider(this);
-  }
 }
