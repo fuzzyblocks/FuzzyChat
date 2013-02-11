@@ -84,9 +84,9 @@ public class SetSuffix implements CommandExecutor {
                     ms.append(args[i]).append(" ");
                 }
                 metadata = ms.toString().trim();
+                instance.provider.setPlayerSuffix(name, metadata);
                 sender.sendMessage(name + "'s suffix set to: " + ChatColor.translateAlternateColorCodes("&".charAt(0),
                         instance.provider.getSuffix(Bukkit.getServer().getOfflinePlayer(name))));
-                instance.provider.setPlayerSuffix(name, metadata);
             } catch (UnsupportedOperationException e) {
                 sender.sendMessage("Operation not supported with current backend.");
                 return false;

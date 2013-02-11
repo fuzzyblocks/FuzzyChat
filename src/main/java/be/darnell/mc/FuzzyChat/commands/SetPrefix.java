@@ -84,9 +84,9 @@ public class SetPrefix implements CommandExecutor {
                     ms.append(args[i]).append(" ");
                 }
                 metadata = ms.toString().trim();
-                sender.sendMessage(name + "'s prefix set to: " + ChatColor.translateAlternateColorCodes("&".charAt(0),
-                        instance.provider.getSuffix(Bukkit.getServer().getOfflinePlayer(name))));
                 instance.provider.setPlayerPrefix(name, metadata);
+                sender.sendMessage(name + "'s prefix set to: " + ChatColor.translateAlternateColorCodes("&".charAt(0),
+                        instance.provider.getPrefix(Bukkit.getServer().getOfflinePlayer(name))));
             } catch (UnsupportedOperationException e) {
                 sender.sendMessage("Operation not supported with current backend.");
                 return false;
