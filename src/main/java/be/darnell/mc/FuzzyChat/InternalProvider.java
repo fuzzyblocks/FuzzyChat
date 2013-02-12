@@ -26,7 +26,6 @@
  */
 package be.darnell.mc.FuzzyChat;
 
-import com.avaje.ebean.LogLevel;
 import de.bananaco.bpermissions.api.ApiLayer;
 import de.bananaco.bpermissions.api.util.CalculableType;
 import java.io.File;
