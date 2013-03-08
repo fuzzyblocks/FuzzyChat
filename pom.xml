@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>be.darnell</groupId>
     <artifactId>FuzzyChat</artifactId>
@@ -21,11 +21,11 @@
             <id>bpermissions-repo</id>
             <url>http://ess.ementalo.com/nexus/content/repositories/essentials-lib/</url>
         </repository>
-	<!-- Privileges Repository -->
-	<repository>
-	    <id>privileges-repo</id>
-	    <url>http://files.krinsoft.net:8085/nexus/content/groups/public/</url>
-	</repository>
+        <!-- Privileges Repository -->
+        <repository>
+            <id>privileges-repo</id>
+            <url>http://files.krinsoft.net:8085/nexus/content/groups/public/</url>
+        </repository>
     </repositories>
     <scm>
         <developerConnection>scm:git:git@github.com:darnell/FuzzyChat.git</developerConnection>
@@ -87,26 +87,26 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.4.6-R0.4-SNAPSHOT</version>
+            <version>1.4.7-R1.0</version>
             <type>jar</type>
         </dependency>
         <!-- End Bukkit -->
         <dependency>
-	    <groupId>de.bananaco</groupId>
-	    <artifactId>bPermissions2</artifactId>
-	    <version>2.8.6</version>
-	    <type>jar</type>
-	</dependency>
-	<dependency>
-	    <groupId>net.krinsoft</groupId>
-	    <artifactId>Privileges</artifactId>
-	    <version>1.7.3</version>
-	    <type>jar</type>
-	</dependency>
-	<dependency>
-	    <groupId>be.darnell</groupId>
-	    <artifactId>FuzzyLog</artifactId>
-	    <version>1.1</version>
-	</dependency>
+            <groupId>de.bananaco</groupId>
+            <artifactId>bPermissions2</artifactId>
+            <version>2.8.6</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>net.krinsoft</groupId>
+            <artifactId>Privileges</artifactId>
+            <version>1.7.3</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>be.darnell</groupId>
+            <artifactId>FuzzyLog</artifactId>
+            <version>1.1</version>
+        </dependency>
     </dependencies>
 </project>

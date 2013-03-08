@@ -26,68 +26,64 @@
  */
 package be.darnell.mc.FuzzyChat;
 
-import be.darnell.mc.FuzzyChat.commands.SetPrefix;
-import be.darnell.mc.FuzzyChat.commands.SetSuffix;
+import be.darnell.mc.FuzzyChat.commands.*;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
- * 
  * @author cedeel
  */
 public class FuzzyChat extends JavaPlugin {
-  protected static final Logger log = Logger.getLogger("Minecraft");
-  protected FuzzyChatListener listener;
-  public MetaDataProvider provider;
+    protected static final Logger log = Logger.getLogger("Minecraft");
+    protected FuzzyChatListener listener;
+    public MetaDataProvider provider;
 
-  @Override
-  public void onEnable() {
-    PluginDescriptionFile pdf = this.getDescription();
-    
-    FileConfiguration config = this.getConfig();
+    @Override
+    public void onEnable() {
+        FileConfiguration config = this.getConfig();
 
-    config.addDefaults(getConfig());
-    this.saveDefaultConfig();
+        config.addDefaults(getConfig());
+        this.saveDefaultConfig();
 
-    // Metadata provider resolution
-    String pr = config.getString("provider", "internal");
-    if(pr.equalsIgnoreCase("auto")) provider = resolveProvider();
-    else provider = new InternalProvider(this);
+        // Metadata provider resolution
+        String pr = config.getString("provider", "internal");
+        if (pr.equalsIgnoreCase("auto")) provider = resolveProvider();
+        else provider = new InternalProvider(this);
 
-    this.listener = new FuzzyChatListener(config, provider);
-    getServer().getPluginManager().registerEvents(listener, this);
-    log.info(pdf.getName() + " v" + pdf.getVersion() + " started.");
+        listener = new FuzzyChatListener(config, provider);
+        getServer().getPluginManager().registerEvents(listener, this);
+        log.info(this + " started.");
 
-    this.saveConfig();
-    
-    this.getCommand("setprefix").setExecutor(new SetPrefix(this));
-    this.getCommand("setsuffix").setExecutor(new SetSuffix(this));
-  }
+        this.saveConfig();
 
-  @Override
-  public void onDisable() {
-    PluginDescriptionFile pdf = this.getDescription();
-    log.info(pdf.getName() + " v" + pdf.getVersion() + " stopped.");
-  }
-
-  public static String getPlayerNameString(String s) {
-    try {
-      return Bukkit.getServer().getPlayer(s).getName();
-    } catch (NullPointerException e) {
-      // Player not online.
+        this.getCommand("setprefix").setExecutor(new SetPrefix(this));
+        this.getCommand("setsuffix").setExecutor(new SetSuffix(this));
     }
-    return s;
-  }
-  
-  private MetaDataProvider resolveProvider() {
-    Plugin bp = getServer().getPluginManager().getPlugin("bPermissions");
-    if(bp != null && bp.isEnabled()) return new BananaProvider();
-    log.log(Level.WARNING, "[FuzzyChat] No supported external metadata provider found. Falling back to internal.");
-    return new InternalProvider(this);
-  }
+
+    @Override
+    public void onDisable() {
+        log.info(this + " stopped.");
+    }
+
+    public static String getPlayerNameString(String s) {
+        try {
+            return Bukkit.getServer().getPlayer(s).getName();
+        } catch (NullPointerException e) {
+            // Player not online.
+        }
+        return s;
+    }
+
+    private MetaDataProvider resolveProvider() {
+        Plugin bp = getServer().getPluginManager().getPlugin("bPermissions");
+        if (bp != null && bp.isEnabled()) return new BananaProvider();
+        log.log(Level.WARNING, "[FuzzyChat] No supported external metadata provider found. Falling back to internal.");
+        return new InternalProvider(this);
+    }
 }

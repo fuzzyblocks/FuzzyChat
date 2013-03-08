@@ -34,46 +34,44 @@ import org.bukkit.entity.Player;
 
 public final class BananaProvider implements MetaDataProvider {
 
-	@Override
-	public String getPrefix(OfflinePlayer player) {
-		try {
-      Player p = Bukkit.getPlayer(player.getName());
-      return ApiLayer.getValue(p.getWorld().getName(), CalculableType.USER, p.getName(), "prefix");
-    } catch (NullPointerException e) {}
-    return ApiLayer.getValue(Bukkit.getWorlds().get(0).getName(), CalculableType.USER, player.getName(), "prefix");
-	}
+    @Override
+    public String getPrefix(OfflinePlayer player) {
+        try {
+            Player p = Bukkit.getPlayer(player.getName());
+            return ApiLayer.getValue(p.getWorld().getName(), CalculableType.USER, p.getName(), "prefix");
+        } catch (NullPointerException ignored) {
+        }
+        return ApiLayer.getValue(Bukkit.getWorlds().get(0).getName(), CalculableType.USER, player.getName(), "prefix");
+    }
 
-	@Override
-	public String getSuffix(OfflinePlayer player) {
-		try {
-      Player p = Bukkit.getPlayer(player.getName());
-      return ApiLayer.getValue(p.getWorld().getName(), CalculableType.USER, p.getName(), "suffix");
-    } catch (NullPointerException e) {}
-    return ApiLayer.getValue(Bukkit.getWorlds().get(0).getName(), CalculableType.USER, player.getName(), "suffix");
-	}
+    @Override
+    public String getSuffix(OfflinePlayer player) {
+        try {
+            Player p = Bukkit.getPlayer(player.getName());
+            return ApiLayer.getValue(p.getWorld().getName(), CalculableType.USER, p.getName(), "suffix");
+        } catch (NullPointerException ignored) {
+        }
+        return ApiLayer.getValue(Bukkit.getWorlds().get(0).getName(), CalculableType.USER, player.getName(), "suffix");
+    }
 
-	@Override
-	public void setPlayerPrefix(String name, String prefix) {
-		throw new UnsupportedOperationException("Not currently supported."); 
-		
-	}
+    @Override
+    public void setPlayerPrefix(String name, String prefix) {
+        throw new UnsupportedOperationException("Not currently supported.");
+    }
 
-	@Override
-	public void setPlayerSuffix(String name, String suffix) {
-		throw new UnsupportedOperationException("Not currently supported");
-		
-	}
+    @Override
+    public void setPlayerSuffix(String name, String suffix) {
+        throw new UnsupportedOperationException("Not currently supported");
+    }
 
-	@Override
-	public void setGroupPrefix(String name, String prefix) {
-		throw new UnsupportedOperationException("Not currently supported");
-		
-	}
+    @Override
+    public void setGroupPrefix(String name, String prefix) {
+        throw new UnsupportedOperationException("Not currently supported");
+    }
 
-	@Override
-	public void setGroupSuffix(String name, String suffix) {
-		throw new UnsupportedOperationException("Not currently supported");
-		
-	}
+    @Override
+    public void setGroupSuffix(String name, String suffix) {
+        throw new UnsupportedOperationException("Not currently supported");
+    }
 
 }

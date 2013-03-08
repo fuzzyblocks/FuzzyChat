@@ -34,62 +34,61 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 /**
- *
  * @author cedeel
  */
 public class SetSuffix implements CommandExecutor {
 
-  private FuzzyChat instance;
+    private FuzzyChat instance;
 
-  public SetSuffix(FuzzyChat instance) {
-    this.instance = instance;
-  }
-
-  @Override
-  public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-    if (args.length < 1)
-      return false;
-
-    String name, metadata;
-
-    // Setting a group suffix
-    if (args.length > 1 && args[0].equalsIgnoreCase("-g")) {
-      name = args[1];
-
-      StringBuilder ms = new StringBuilder();
-      for (int i = 2; i < args.length; i++) {
-        ms.append(args[i]).append(" ");
-      }
-      metadata = ms.toString().trim();
-
-      instance.provider.setGroupSuffix(name, metadata);
-
-      return true;
-    } // Setting a user suffix
-    else {
-      name = FuzzyChat.getPlayerNameString(args[0]);
-
-      try {
-        if (args.length == 1) {
-          instance.provider.setPlayerSuffix(name, "");
-          sender.sendMessage(name + "'s suffix removed successfully.");
-          return true;
-        }
-
-        StringBuilder ms = new StringBuilder();
-        for (int i = 1; i < args.length; i++) {
-          ms.append(args[i]).append(" ");
-        }
-        metadata = ms.toString().trim();
-        instance.provider.setPlayerSuffix(name, metadata);
-        sender.sendMessage(name + "'s suffix set to: " + ChatColor.translateAlternateColorCodes("&".charAt(0),
-                instance.provider.getSuffix(Bukkit.getServer().getOfflinePlayer(name))));
-      } catch (UnsupportedOperationException e) {
-        sender.sendMessage("Operation not supported with current backend.");
-        return false;
-      }
-
-      return true;
+    public SetSuffix(FuzzyChat instance) {
+        this.instance = instance;
     }
-  }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if (args.length < 1)
+            return false;
+
+        String name, metadata;
+
+        // Setting a group suffix
+        if (args.length > 1 && args[0].equalsIgnoreCase("-g")) {
+            name = args[1];
+
+            StringBuilder ms = new StringBuilder();
+            for (int i = 2; i < args.length; i++) {
+                ms.append(args[i]).append(" ");
+            }
+            metadata = ms.toString().trim();
+
+            instance.provider.setGroupSuffix(name, metadata);
+
+            return true;
+        } // Setting a user suffix
+        else {
+            name = FuzzyChat.getPlayerNameString(args[0]);
+
+            try {
+                if (args.length == 1) {
+                    instance.provider.setPlayerSuffix(name, "");
+                    sender.sendMessage(name + "'s suffix removed successfully.");
+                    return true;
+                }
+
+                StringBuilder ms = new StringBuilder();
+                for (int i = 1; i < args.length; i++) {
+                    ms.append(args[i]).append(" ");
+                }
+                metadata = ms.toString().trim();
+                instance.provider.setPlayerSuffix(name, metadata);
+                sender.sendMessage(name + "'s suffix set to: " + ChatColor.translateAlternateColorCodes("&".charAt(0),
+                        instance.provider.getSuffix(Bukkit.getServer().getOfflinePlayer(name))));
+            } catch (UnsupportedOperationException e) {
+                sender.sendMessage("Operation not supported with current backend.");
+                return false;
+            }
+
+            return true;
+        }
+    }
 }
