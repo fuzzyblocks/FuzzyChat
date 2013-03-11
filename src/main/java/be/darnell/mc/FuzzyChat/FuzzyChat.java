@@ -26,11 +26,12 @@
  */
 package be.darnell.mc.FuzzyChat;
 
-import be.darnell.mc.FuzzyChat.commands.*;
+import be.darnell.mc.FuzzyChat.commands.SetNick;
+import be.darnell.mc.FuzzyChat.commands.SetPrefix;
 
+import be.darnell.mc.FuzzyChat.commands.SetSuffix;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -64,6 +65,7 @@ public class FuzzyChat extends JavaPlugin {
 
         this.getCommand("setprefix").setExecutor(new SetPrefix(this));
         this.getCommand("setsuffix").setExecutor(new SetSuffix(this));
+        this.getCommand("setnick").setExecutor(new SetNick(this));
     }
 
     @Override

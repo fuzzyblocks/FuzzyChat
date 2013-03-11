@@ -20,6 +20,9 @@ permissions:
   fuzzychat.setsuffix:
     description: Assign suffixes
     default: op
+  fuzzychat.setnick:
+    description: Assign nicknames
+    default: op
 commands:
   hc:
     description: Management command
@@ -30,3 +33,6 @@ commands:
   setsuffix:
     description: Assign suffixes
     permission: fuzzychat.setsuffix
+  setnick:
+    description: Assign nicknames
+    permission: fuzzychat.setnick

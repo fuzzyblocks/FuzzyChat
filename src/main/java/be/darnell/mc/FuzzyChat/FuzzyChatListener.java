@@ -28,9 +28,7 @@ package be.darnell.mc.FuzzyChat;
 
 import be.darnell.mc.FuzzyLog.FuzzyLog;
 import be.darnell.mc.FuzzyLog.LogFacility;
-
 import java.util.regex.Pattern;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -104,7 +102,7 @@ public class FuzzyChatListener implements Listener {
         if (useLogger) {
             event.setCancelled(true);
             StringBuilder toLog = new StringBuilder(32);
-            toLog.append(event.getPlayer().getDisplayName());
+            toLog.append(event.getPlayer().getName());
             toLog.append(": ");
             toLog.append(event.getMessage());
 
@@ -121,7 +119,7 @@ public class FuzzyChatListener implements Listener {
         format = format.replace("%prefix", meta.getPrefix(player))
                 .replace("%suffix", meta.getSuffix(player))
                 .replace("%world", player.getWorld().getName())
-                .replace("%player", player.getName());
+                .replace("%player", player.getDisplayName());
         format = colorize(format);
         format = magicify(format);
         format = stylize(format);
