@@ -27,6 +27,8 @@
 package be.darnell.mc.FuzzyChat.commands;
 
 import be.darnell.mc.FuzzyChat.FuzzyChat;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -46,13 +48,32 @@ public class SetNick implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        Player player = (Player) sender;
-        if (args.length < 1)
-            return false;
-        if (args.length == 1)
+//        Player player = (Player) sender;
+//        if (args.length < 1)
+//            return false;
+//        if (args.length == 1)
+//            player.setDisplayName(args[0]);
+//        setDisplayName(player.getName(), args[0]);
+//        player.sendMessage(ChatColor.AQUA + "Nickname changed to " + args[0]);
+//        return true;
+        if(args.length < 1 || args.length > 2) return false;
+        String nick;
+        if(args.length == 1 && sender instanceof Player) {
+            nick = args[0];
+            Player player = (Player)sender;
+            instance.nickprovider.setNick(player.getName(), nick);
             player.setDisplayName(args[0]);
-        instance.nickprovider.getNicks().set(player.getName().toLowerCase() + ".Nickname", args[0]);
-        player.sendMessage("Nickname changed to " + args[0]);
+            player.sendMessage(ChatColor.AQUA + "Nickname changed to " + nick);
+        } else if(args.length == 2) {
+            nick = args[1];
+            String target = args[0];
+            instance.nickprovider.setNick(target, nick);
+            Player player = Bukkit.getPlayer(target);
+            if(player != null) {
+                player.setDisplayName(nick);
+                sender.sendMessage(ChatColor.AQUA + player.getName() + "'s nickname changed to " + nick);
+            }
+        }
         return true;
     }
 }

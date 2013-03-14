@@ -28,7 +28,6 @@ package be.darnell.mc.FuzzyChat;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.logging.Level;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -50,23 +49,24 @@ public final class NicknameProvider {
 
     public void reloadNicks() {
         if (nicksFile == null)
-            nicksFile = new File(plugin.getDataFolder(), "Nicknames.yml");
+            nicksFile = new File(plugin.getDataFolder(), "nicknames.yml");
         nicks = YamlConfiguration.loadConfiguration(nicksFile);
-
-        InputStream defnicks = plugin.getResource("Nicknames.yml");
     }
 
-    public FileConfiguration getNicks() {
-        if (nicks == null)
-            this.reloadNicks();
-        return nicks;
+    public String getNick(String player) {
+        return nicks.getString(player.toLowerCase() + ".nickname", player);
+    }
+
+    public void setNick(String player, String nick) {
+        nicks.set(player.toLowerCase() + ".nickname", nick);
+        saveNicks();
     }
 
     public void saveNicks() {
         if (nicks == null || nicksFile == null)
             return;
         try {
-            getNicks().save(nicksFile);
+            nicks.save(nicksFile);
         } catch (IOException ex) {
             plugin.getLogger().log(Level.SEVERE, "Could not save config to " + nicksFile, ex);
         }
