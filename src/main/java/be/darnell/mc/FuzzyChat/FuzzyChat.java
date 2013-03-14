@@ -28,7 +28,6 @@ package be.darnell.mc.FuzzyChat;
 
 import be.darnell.mc.FuzzyChat.commands.SetNick;
 import be.darnell.mc.FuzzyChat.commands.SetPrefix;
-
 import be.darnell.mc.FuzzyChat.commands.SetSuffix;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,9 +40,12 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @author cedeel
  */
 public class FuzzyChat extends JavaPlugin {
+
     protected static final Logger log = Logger.getLogger("Minecraft");
     protected FuzzyChatListener listener;
+    protected LoginListener loginlistener;
     public MetaDataProvider provider;
+    public NicknameProvider nickprovider;
 
     @Override
     public void onEnable() {
@@ -54,13 +56,18 @@ public class FuzzyChat extends JavaPlugin {
 
         // Metadata provider resolution
         String pr = config.getString("provider", "internal");
-        if (pr.equalsIgnoreCase("auto")) provider = resolveProvider();
-        else provider = new InternalProvider(this);
+        if (pr.equalsIgnoreCase("auto"))
+            provider = resolveProvider();
+        else
+            provider = new InternalProvider(this);
 
         listener = new FuzzyChatListener(config, provider);
+        loginlistener = new LoginListener(this);
+        getServer().getPluginManager().registerEvents(loginlistener, this);
         getServer().getPluginManager().registerEvents(listener, this);
         log.info(this + " started.");
 
+        nickprovider = new NicknameProvider(this);
         this.saveConfig();
 
         this.getCommand("setprefix").setExecutor(new SetPrefix(this));
@@ -71,6 +78,7 @@ public class FuzzyChat extends JavaPlugin {
     @Override
     public void onDisable() {
         log.info(this + " stopped.");
+        nickprovider.saveNicks();
     }
 
     public static String getPlayerNameString(String s) {
@@ -84,7 +92,8 @@ public class FuzzyChat extends JavaPlugin {
 
     private MetaDataProvider resolveProvider() {
         Plugin bp = getServer().getPluginManager().getPlugin("bPermissions");
-        if (bp != null && bp.isEnabled()) return new BananaProvider();
+        if (bp != null && bp.isEnabled())
+            return new BananaProvider();
         log.log(Level.WARNING, "[FuzzyChat] No supported external metadata provider found. Falling back to internal.");
         return new InternalProvider(this);
     }

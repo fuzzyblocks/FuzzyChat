@@ -24,35 +24,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package be.darnell.mc.FuzzyChat.commands;
+package be.darnell.mc.FuzzyChat;
 
-import be.darnell.mc.FuzzyChat.FuzzyChat;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 /**
  *
  * @author LankyLord
  */
-public class SetNick implements CommandExecutor {
+public class LoginListener implements Listener {
 
     private FuzzyChat instance;
 
-    public SetNick(FuzzyChat instance) {
+    public LoginListener(FuzzyChat instance) {
         this.instance = instance;
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        Player player = (Player) sender;
-        if (args.length < 1)
-            return false;
-        if (args.length == 1)
-            player.setDisplayName(args[0]);
-        instance.nickprovider.getNicks().set(player.getName().toLowerCase() + ".Nickname", args[0]);
-        player.sendMessage("Nickname changed to " + args[0]);
-        return true;
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        
+        if (instance.nickprovider.getNicks().contains(player.getName().toLowerCase()))
+        {
+            player.setDisplayName(instance.nickprovider.getNicks().getString(player.getName().toLowerCase() + ".Nickname"));
+        }
     }
 }

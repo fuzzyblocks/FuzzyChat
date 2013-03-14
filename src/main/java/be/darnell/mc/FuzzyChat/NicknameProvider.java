@@ -24,35 +24,51 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package be.darnell.mc.FuzzyChat.commands;
+package be.darnell.mc.FuzzyChat;
 
-import be.darnell.mc.FuzzyChat.FuzzyChat;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  *
  * @author LankyLord
  */
-public class SetNick implements CommandExecutor {
+public final class NicknameProvider {
 
-    private FuzzyChat instance;
+    private FuzzyChat plugin;
+    private File nicksFile;
+    private FileConfiguration nicks;
 
-    public SetNick(FuzzyChat instance) {
-        this.instance = instance;
+    NicknameProvider(FuzzyChat plugin) {
+        this.plugin = plugin;
+        reloadNicks();
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        Player player = (Player) sender;
-        if (args.length < 1)
-            return false;
-        if (args.length == 1)
-            player.setDisplayName(args[0]);
-        instance.nickprovider.getNicks().set(player.getName().toLowerCase() + ".Nickname", args[0]);
-        player.sendMessage("Nickname changed to " + args[0]);
-        return true;
+    public void reloadNicks() {
+        if (nicksFile == null)
+            nicksFile = new File(plugin.getDataFolder(), "Nicknames.yml");
+        nicks = YamlConfiguration.loadConfiguration(nicksFile);
+
+        InputStream defnicks = plugin.getResource("Nicknames.yml");
+    }
+
+    public FileConfiguration getNicks() {
+        if (nicks == null)
+            this.reloadNicks();
+        return nicks;
+    }
+
+    public void saveNicks() {
+        if (nicks == null || nicksFile == null)
+            return;
+        try {
+            getNicks().save(nicksFile);
+        } catch (IOException ex) {
+            plugin.getLogger().log(Level.SEVERE, "Could not save config to " + nicksFile, ex);
+        }
     }
 }
