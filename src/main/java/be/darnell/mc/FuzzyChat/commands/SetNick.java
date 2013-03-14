@@ -48,14 +48,6 @@ public class SetNick implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-//        Player player = (Player) sender;
-//        if (args.length < 1)
-//            return false;
-//        if (args.length == 1)
-//            player.setDisplayName(args[0]);
-//        setDisplayName(player.getName(), args[0]);
-//        player.sendMessage(ChatColor.AQUA + "Nickname changed to " + args[0]);
-//        return true;
         if(args.length < 1 || args.length > 2) return false;
         String nick;
         if(args.length == 1 && sender instanceof Player) {
