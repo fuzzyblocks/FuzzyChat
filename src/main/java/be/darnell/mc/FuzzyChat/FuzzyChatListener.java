@@ -102,10 +102,7 @@ public class FuzzyChatListener implements Listener {
         if (useLogger) {
             event.setCancelled(true);
             StringBuilder toLog = new StringBuilder(32);
-            toLog.append(event.getPlayer().getDisplayName());
-            toLog.append("(");
             toLog.append(event.getPlayer().getName());
-            toLog.append(")");
             toLog.append(": ");
             toLog.append(event.getMessage());
 
