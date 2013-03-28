@@ -27,6 +27,7 @@
 package be.darnell.mc.FuzzyChat.commands;
 
 import be.darnell.mc.FuzzyChat.FuzzyChat;
+import be.darnell.mc.FuzzyChat.MetaDataProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -38,10 +39,10 @@ import org.bukkit.command.CommandSender;
  */
 public class SetPrefix implements CommandExecutor {
 
-    private FuzzyChat instance;
+    private MetaDataProvider provider;
 
-    public SetPrefix(FuzzyChat instance) {
-        this.instance = instance;
+    public SetPrefix(MetaDataProvider meta) {
+        provider = meta;
     }
 
     @Override
@@ -61,7 +62,7 @@ public class SetPrefix implements CommandExecutor {
             }
             metadata = ms.toString().trim();
 
-            instance.provider.setGroupPrefix(name, metadata);
+            provider.setGroupPrefix(name, metadata);
 
             return true;
         } // Setting a user prefix
@@ -70,7 +71,7 @@ public class SetPrefix implements CommandExecutor {
 
             try {
                 if (args.length == 1) {
-                    instance.provider.setPlayerPrefix(name, "");
+                    provider.setPlayerPrefix(name, "");
                     sender.sendMessage(name + "'s prefix removed successfully.");
                     return true;
                 }
@@ -80,9 +81,9 @@ public class SetPrefix implements CommandExecutor {
                     ms.append(args[i]).append(" ");
                 }
                 metadata = ms.toString().trim();
-                instance.provider.setPlayerPrefix(name, metadata);
-                sender.sendMessage(name + "'s prefix set to: " + ChatColor.translateAlternateColorCodes("&".charAt(0),
-                        instance.provider.getPrefix(Bukkit.getServer().getOfflinePlayer(name))));
+                provider.setPlayerPrefix(name, metadata);
+                sender.sendMessage(name + "'s prefix set to: " + ChatColor.translateAlternateColorCodes('&',
+                        provider.getPrefix(Bukkit.getServer().getOfflinePlayer(name))));
             } catch (UnsupportedOperationException e) {
                 sender.sendMessage("Operation not supported with current backend.");
                 return false;

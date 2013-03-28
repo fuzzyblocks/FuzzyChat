@@ -36,14 +36,14 @@ import org.bukkit.event.player.PlayerJoinEvent;
  */
 public class LoginListener implements Listener {
 
-    private FuzzyChat instance;
+    private NicknameProvider provider;
 
-    public LoginListener(FuzzyChat instance) {
-        this.instance = instance;
+    public LoginListener(NicknameProvider nicks) {
+        provider = nicks;
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        event.getPlayer().setDisplayName(instance.nickprovider.getNick(event.getPlayer().getName()));
+        event.getPlayer().setDisplayName(provider.getNick(event.getPlayer().getName()));
     }
 }

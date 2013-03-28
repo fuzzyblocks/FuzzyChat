@@ -27,6 +27,7 @@
 package be.darnell.mc.FuzzyChat.commands;
 
 import be.darnell.mc.FuzzyChat.FuzzyChat;
+import be.darnell.mc.FuzzyChat.MetaDataProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -38,10 +39,10 @@ import org.bukkit.command.CommandSender;
  */
 public class SetSuffix implements CommandExecutor {
 
-    private FuzzyChat instance;
+    private MetaDataProvider provider;
 
-    public SetSuffix(FuzzyChat instance) {
-        this.instance = instance;
+    public SetSuffix(MetaDataProvider provider) {
+        this.provider = provider;
     }
 
     @Override
@@ -61,7 +62,7 @@ public class SetSuffix implements CommandExecutor {
             }
             metadata = ms.toString().trim();
 
-            instance.provider.setGroupSuffix(name, metadata);
+            provider.setGroupSuffix(name, metadata);
 
             return true;
         } // Setting a user suffix
@@ -70,7 +71,7 @@ public class SetSuffix implements CommandExecutor {
 
             try {
                 if (args.length == 1) {
-                    instance.provider.setPlayerSuffix(name, "");
+                    provider.setPlayerSuffix(name, "");
                     sender.sendMessage(name + "'s suffix removed successfully.");
                     return true;
                 }
@@ -80,9 +81,9 @@ public class SetSuffix implements CommandExecutor {
                     ms.append(args[i]).append(" ");
                 }
                 metadata = ms.toString().trim();
-                instance.provider.setPlayerSuffix(name, metadata);
-                sender.sendMessage(name + "'s suffix set to: " + ChatColor.translateAlternateColorCodes("&".charAt(0),
-                        instance.provider.getSuffix(Bukkit.getServer().getOfflinePlayer(name))));
+                provider.setPlayerSuffix(name, metadata);
+                sender.sendMessage(name + "'s suffix set to: " + ChatColor.translateAlternateColorCodes('&',
+                        provider.getSuffix(Bukkit.getServer().getOfflinePlayer(name))));
             } catch (UnsupportedOperationException e) {
                 sender.sendMessage("Operation not supported with current backend.");
                 return false;

@@ -26,9 +26,7 @@
  */
 package be.darnell.mc.FuzzyChat;
 
-import be.darnell.mc.FuzzyChat.commands.SetNick;
-import be.darnell.mc.FuzzyChat.commands.SetPrefix;
-import be.darnell.mc.FuzzyChat.commands.SetSuffix;
+import be.darnell.mc.FuzzyChat.commands.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
@@ -42,10 +40,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class FuzzyChat extends JavaPlugin {
 
     protected static final Logger log = Logger.getLogger("Minecraft");
-    protected FuzzyChatListener listener;
-    protected LoginListener loginlistener;
-    public MetaDataProvider provider;
-    public NicknameProvider nickprovider;
+    private NicknameProvider nickprovider;
 
     @Override
     public void onEnable() {
@@ -55,24 +50,25 @@ public class FuzzyChat extends JavaPlugin {
         this.saveDefaultConfig();
 
         // Metadata provider resolution
+        MetaDataProvider provider;
+    
         String pr = config.getString("provider", "internal");
         if (pr.equalsIgnoreCase("auto"))
             provider = resolveProvider();
         else
             provider = new InternalProvider(this);
 
-        listener = new FuzzyChatListener(config, provider);
-        loginlistener = new LoginListener(this);
-        getServer().getPluginManager().registerEvents(loginlistener, this);
-        getServer().getPluginManager().registerEvents(listener, this);
+        nickprovider = new NicknameProvider(this);
+        getServer().getPluginManager().registerEvents(new LoginListener(nickprovider), this);
+        getServer().getPluginManager().registerEvents(new FuzzyChatListener(config, provider), this);
         log.info(this + " started.");
 
-        nickprovider = new NicknameProvider(this);
+        
         this.saveConfig();
 
-        this.getCommand("setprefix").setExecutor(new SetPrefix(this));
-        this.getCommand("setsuffix").setExecutor(new SetSuffix(this));
-        this.getCommand("setnick").setExecutor(new SetNick(this));
+        this.getCommand("setprefix").setExecutor(new SetPrefix(provider));
+        this.getCommand("setsuffix").setExecutor(new SetSuffix(provider));
+        this.getCommand("setnick").setExecutor(new SetNick(nickprovider));
     }
 
     @Override
