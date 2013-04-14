@@ -63,6 +63,7 @@ public class SetNick implements CommandExecutor {
             Player player = Bukkit.getPlayer(target);
             if(player != null) {
                 player.setDisplayName(nick);
+                player.setPlayerListName(nick);
                 sender.sendMessage(ChatColor.AQUA + player.getName() + "'s nickname changed to " + nick);
             }
         }
