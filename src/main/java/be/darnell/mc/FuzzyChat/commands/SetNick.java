@@ -55,6 +55,7 @@ public class SetNick implements CommandExecutor {
             Player player = (Player)sender;
             provider.setNick(player.getName(), nick);
             player.setDisplayName(args[0]);
+            player.setPlayerListName(args[0]);
             player.sendMessage(ChatColor.AQUA + "Nickname changed to " + nick);
         } else if(args.length == 2) {
             nick = args[1];
