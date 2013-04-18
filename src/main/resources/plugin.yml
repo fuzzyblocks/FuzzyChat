@@ -23,6 +23,9 @@ permissions:
   fuzzychat.setnick:
     description: Assign nicknames
     default: op
+  fuzzychat.whois:
+    description: Lookup usernames
+    defualt: op
 commands:
   hc:
     description: Management command
@@ -36,3 +39,6 @@ commands:
   setnick:
     description: Assign nicknames
     permission: fuzzychat.setnick
+  whois:
+    description: Lookup usernames
+    permission: fuzzychat.whois

@@ -48,21 +48,22 @@ public class SetNick implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if(args.length < 1 || args.length > 2) return false;
         String nick;
-        if(args.length == 1 && sender instanceof Player) {
+        if (args.length < 1 || args.length > 2)
+            return false;
+        if (args.length == 1 && sender instanceof Player) {
             nick = args[0];
-            Player player = (Player)sender;
+            Player player = (Player) sender;
             provider.setNick(player.getName(), nick);
-            player.setDisplayName(args[0]);
-            player.setPlayerListName(args[0]);
+            player.setDisplayName(nick);
+            player.setPlayerListName(nick);
             player.sendMessage(ChatColor.AQUA + "Nickname changed to " + nick);
-        } else if(args.length == 2) {
+        } else if (args.length == 2) {
             nick = args[1];
             String target = args[0];
-            provider.setNick(target, nick);
             Player player = Bukkit.getPlayer(target);
-            if(player != null) {
+            if (player != null) {
+                provider.setNick(target, nick);
                 player.setDisplayName(nick);
                 player.setPlayerListName(nick);
                 sender.sendMessage(ChatColor.AQUA + player.getName() + "'s nickname changed to " + nick);

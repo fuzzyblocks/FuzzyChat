@@ -51,7 +51,7 @@ public class FuzzyChat extends JavaPlugin {
 
         // Metadata provider resolution
         MetaDataProvider provider;
-    
+
         String pr = config.getString("provider", "internal");
         if (pr.equalsIgnoreCase("auto"))
             provider = resolveProvider();
@@ -63,12 +63,13 @@ public class FuzzyChat extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new FuzzyChatListener(config, provider), this);
         log.info(this + " started.");
 
-        
+
         this.saveConfig();
 
         this.getCommand("setprefix").setExecutor(new SetPrefix(provider));
         this.getCommand("setsuffix").setExecutor(new SetSuffix(provider));
         this.getCommand("setnick").setExecutor(new SetNick(nickprovider));
+        this.getCommand("whois").setExecutor(new Whois(nickprovider));
     }
 
     @Override

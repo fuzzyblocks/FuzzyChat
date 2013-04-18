@@ -26,11 +26,11 @@
  */
 package be.darnell.mc.FuzzyChat;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -39,36 +39,58 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public final class NicknameProvider {
 
     private FuzzyChat plugin;
-    private File nicksFile;
-    private FileConfiguration nicks;
+    public static HashMap<String, String> displaynames = new HashMap<String, String>();
+    public static HashMap<String, String> usernames = new HashMap<String, String>();
 
     NicknameProvider(FuzzyChat plugin) {
         this.plugin = plugin;
-        reloadNicks();
+        displaynames = loadNicks();
+        for (Entry<String, String> entry : displaynames.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            usernames.put(value.toLowerCase(), key);
+        }
     }
 
-    public void reloadNicks() {
-        if (nicksFile == null)
-            nicksFile = new File(plugin.getDataFolder(), "nicknames.yml");
-        nicks = YamlConfiguration.loadConfiguration(nicksFile);
+    public String getNick(String playername) {
+        String value = displaynames.get(playername);
+        if (value == null)
+            return playername;
+        else
+            return value;
     }
 
-    public String getNick(String player) {
-        return nicks.getString(player.toLowerCase() + ".nickname", player);
+    public String getUser(String nickname) {
+        String value = usernames.get(nickname);
+        return value;
     }
 
-    public void setNick(String player, String nick) {
-        nicks.set(player.toLowerCase() + ".nickname", nick);
-        saveNicks();
+    public void setNick(String playername, String nick) {
+        displaynames.put(playername.toLowerCase(), nick);
+        usernames.put(nick, playername.toLowerCase());
     }
 
     public void saveNicks() {
-        if (nicks == null || nicksFile == null)
-            return;
+        File displaynamesFile = new File(plugin.getDataFolder(), "displaynames.txt");
         try {
-            nicks.save(nicksFile);
-        } catch (IOException ex) {
-            plugin.getLogger().log(Level.SEVERE, "Could not save config to " + nicksFile, ex);
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(displaynamesFile));
+            out.writeObject(displaynames);
+        } catch (Exception e) {
+            plugin.getServer().getLogger().severe("Could not write displaynames to file");
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public HashMap<String, String> loadNicks() {
+        File displaynamesFile = new File(plugin.getDataFolder(), "displaynames.txt");
+        try {
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(displaynamesFile));
+            return (HashMap<String, String>) in.readObject();
+        } catch (Exception e) {
+            plugin.getServer().getLogger().severe("Could not read displaynames from file");
+            return new HashMap<String, String>();
+
+
         }
     }
 }
