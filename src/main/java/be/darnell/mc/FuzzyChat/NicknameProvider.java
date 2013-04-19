@@ -37,54 +37,54 @@ import java.util.Map.Entry;
 public final class NicknameProvider {
 
     private FuzzyChat plugin;
-    public static HashMap<String, String> displaynames = new HashMap<String, String>();
-    public static HashMap<String, String> usernames = new HashMap<String, String>();
+    public static HashMap<String, String> userToDisplayName = new HashMap<String, String>();
+    public static HashMap<String, String> displayToUserName = new HashMap<String, String>();
 
     NicknameProvider(FuzzyChat plugin) {
         this.plugin = plugin;
-        displaynames = loadNicks();
-        for (Entry<String, String> entry : displaynames.entrySet()) {
-            usernames.put(entry.getValue().toLowerCase(), entry.getKey());
+        userToDisplayName = loadNicks();
+        for (Entry<String, String> entry : userToDisplayName.entrySet()) {
+            displayToUserName.put(entry.getValue().toLowerCase(), entry.getKey());
         }
     }
 
-    public String getNick(String playername) {
-        String value = displaynames.get(playername.toLowerCase());
+    public String getNick(String userName) {
+        String value = userToDisplayName.get(userName.toLowerCase());
         if (value == null)
-            return playername;
+            return userName;
         else
             return value;
     }
 
-    public String getUser(String nickname) {
-        return usernames.get(nickname);
+    public String getUser(String displayName) {
+        return displayToUserName.get(displayName);
     }
 
-    public void setNick(String playername, String nick) {
-        if(displaynames.containsKey(playername.toLowerCase()))
-            usernames.remove(getNick(playername.toLowerCase()));
-        displaynames.put(playername.toLowerCase(), nick);
-        usernames.put(nick.toLowerCase(), playername.toLowerCase());
+    public void setNick(String userName, String displayName) {
+        if(userToDisplayName.containsKey(userName.toLowerCase()))
+            displayToUserName.remove(getNick(userName.toLowerCase()));
+        userToDisplayName.put(userName.toLowerCase(), displayName);
+        displayToUserName.put(displayName.toLowerCase(), userName.toLowerCase());
     }
 
     public void saveNicks() {
-        File displaynamesFile = new File(plugin.getDataFolder(), "displaynames.txt");
+        File displaynamesFile = new File(plugin.getDataFolder(), "userToDisplayName.txt");
         try {
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(displaynamesFile));
-            out.writeObject(displaynames);
+            out.writeObject(userToDisplayName);
         } catch (Exception e) {
-            plugin.getServer().getLogger().severe("Could not write displaynames to file");
+            plugin.getServer().getLogger().severe("Could not write userToDisplayName to file");
         }
     }
 
     @SuppressWarnings("unchecked")
     public HashMap<String, String> loadNicks() {
-        File displaynamesFile = new File(plugin.getDataFolder(), "displaynames.txt");
+        File displaynamesFile = new File(plugin.getDataFolder(), "userToDisplayName.txt");
         try {
             ObjectInputStream in = new ObjectInputStream(new FileInputStream(displaynamesFile));
             return (HashMap<String, String>) in.readObject();
         } catch (Exception e) {
-            plugin.getServer().getLogger().severe("Could not read displaynames from file");
+            plugin.getServer().getLogger().severe("Could not read userToDisplayName from file");
             return new HashMap<String, String>();
 
 
