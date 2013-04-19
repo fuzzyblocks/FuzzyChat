@@ -19,9 +19,6 @@ import org.bukkit.entity.Player;
 public class Whois implements CommandExecutor {
 
     private NicknameProvider provider;
-    private String nick;
-    private String user;
-    private String actual;
 
     public Whois(NicknameProvider nicks) {
         provider = nicks;
@@ -32,20 +29,17 @@ public class Whois implements CommandExecutor {
         if (args.length != 1)
             return false;
         else {
-            nick = args[0].toLowerCase();
-            user = provider.getUser(nick);
-            Player player = Bukkit.getPlayer(user);
-            if (player == null) {
-                sender.sendMessage(ChatColor.RED + "Nickname not found.");
+            String user = provider.getUser(args[0].toLowerCase());
+            if(user != null) {
+                Player player = Bukkit.getPlayer(user);
+                String actual = player != null ? player.getName() : user;
+                String nick = provider.getNick(user);
+                sender.sendMessage(ChatColor.AQUA + nick + "'s actual name is " + actual);
+                return true;
+            } else {
+                sender.sendMessage(ChatColor.RED + "User doesn't have a nickname");
                 return false;
             }
-            if (player != null) {
-                String playername = player.getName();
-                actual = provider.getNick(user);
-                sender.sendMessage(ChatColor.AQUA + actual + "'s actual name is " + playername);
-            }
-            return false;
-
 
         }
     }

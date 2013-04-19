@@ -29,8 +29,6 @@ package be.darnell.mc.FuzzyChat;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 /**
  *
@@ -46,14 +44,12 @@ public final class NicknameProvider {
         this.plugin = plugin;
         displaynames = loadNicks();
         for (Entry<String, String> entry : displaynames.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            usernames.put(value.toLowerCase(), key);
+            usernames.put(entry.getValue().toLowerCase(), entry.getKey());
         }
     }
 
     public String getNick(String playername) {
-        String value = displaynames.get(playername);
+        String value = displaynames.get(playername.toLowerCase());
         if (value == null)
             return playername;
         else
@@ -61,13 +57,14 @@ public final class NicknameProvider {
     }
 
     public String getUser(String nickname) {
-        String value = usernames.get(nickname);
-        return value;
+        return usernames.get(nickname);
     }
 
     public void setNick(String playername, String nick) {
+        if(displaynames.containsKey(playername.toLowerCase()))
+            usernames.remove(getNick(playername.toLowerCase()));
         displaynames.put(playername.toLowerCase(), nick);
-        usernames.put(nick, playername.toLowerCase());
+        usernames.put(nick.toLowerCase(), playername.toLowerCase());
     }
 
     public void saveNicks() {
