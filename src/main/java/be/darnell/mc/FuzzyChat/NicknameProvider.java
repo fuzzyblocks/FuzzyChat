@@ -27,10 +27,13 @@
 package be.darnell.mc.FuzzyChat;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
 /**
  *
@@ -41,6 +44,8 @@ public final class NicknameProvider {
     private FuzzyChat plugin;
     public static HashMap<String, String> userToDisplayName = new HashMap<String, String>();
     public static HashMap<String, String> displayToUserName = new HashMap<String, String>();
+    private FileConfiguration nicks = null;
+    private File nicksFile = null;
 
     NicknameProvider(FuzzyChat plugin) {
         this.plugin = plugin;
@@ -69,27 +74,32 @@ public final class NicknameProvider {
         displayToUserName.put(displayName.toLowerCase(), userName.toLowerCase());
     }
 
-    public void saveNicks() {
-        File displaynamesFile = new File(plugin.getDataFolder(), "userToDisplayName.txt");
-        try {
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(displaynamesFile));
-            out.writeObject(userToDisplayName);
-        } catch (Exception e) {
-            plugin.getServer().getLogger().severe("Could not write userToDisplayName to file");
+    public void reloadNicks() {
+        if (nicksFile == null) {
+            nicksFile = new File(plugin.getDataFolder(), "nicknames.yml");
         }
+        nicks = YamlConfiguration.loadConfiguration(nicksFile);
+    }
+
+    public void saveNicks() {
+        if(nicks == null || nicksFile == null)
+            return;
+        try {
+            nicks.createSection("", userToDisplayName);
+            getNickConfig().save(nicksFile);
+        } catch (IOException e) {
+            plugin.getLogger().log(Level.SEVERE, "Could not save nicks to " +  nicksFile, e);
+        }
+    }
+
+    private FileConfiguration getNickConfig() {
+        if (nicks == null)
+            reloadNicks();
+        return nicks;
     }
 
     @SuppressWarnings("unchecked")
     public HashMap<String, String> loadNicks() {
-        File displaynamesFile = new File(plugin.getDataFolder(), "userToDisplayName.txt");
-        try {
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream(displaynamesFile));
-            return (HashMap<String, String>) in.readObject();
-        } catch (Exception e) {
-            plugin.getServer().getLogger().severe("Could not read userToDisplayName from file");
-            return new HashMap<String, String>();
-
-
-        }
+        return new HashMap(getNickConfig().getValues(false));
     }
 }
