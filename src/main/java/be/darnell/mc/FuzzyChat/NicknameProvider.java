@@ -26,6 +26,8 @@
  */
 package be.darnell.mc.FuzzyChat;
 
+import org.bukkit.Bukkit;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -51,7 +53,7 @@ public final class NicknameProvider {
     public String getNick(String userName) {
         String value = userToDisplayName.get(userName.toLowerCase());
         if (value == null)
-            return userName;
+            return Bukkit.getPlayer(userName).getName();
         else
             return value;
     }
