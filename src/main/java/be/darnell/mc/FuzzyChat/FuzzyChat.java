@@ -39,7 +39,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class FuzzyChat extends JavaPlugin {
 
-    protected static final Logger log = Logger.getLogger("Minecraft");
+    static final Logger log = Logger.getLogger("Minecraft");
     private NicknameProvider nickprovider;
 
     @Override

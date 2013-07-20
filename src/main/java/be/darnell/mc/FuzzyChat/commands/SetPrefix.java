@@ -39,7 +39,7 @@ import org.bukkit.command.CommandSender;
  */
 public class SetPrefix implements CommandExecutor {
 
-    private MetaDataProvider provider;
+    private final MetaDataProvider provider;
 
     public SetPrefix(MetaDataProvider meta) {
         provider = meta;

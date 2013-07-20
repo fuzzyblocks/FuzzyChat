@@ -41,9 +41,9 @@ import java.util.logging.Level;
  */
 public final class NicknameProvider {
 
-    private FuzzyChat plugin;
-    public static HashMap<String, String> userToDisplayName = new HashMap<String, String>();
-    public static HashMap<String, String> displayToUserName = new HashMap<String, String>();
+    private final FuzzyChat plugin;
+    private static HashMap<String, String> userToDisplayName = new HashMap<String, String>();
+    private static final HashMap<String, String> displayToUserName = new HashMap<String, String>();
     private FileConfiguration nicks = null;
     private File nicksFile = null;
 
@@ -73,7 +73,7 @@ public final class NicknameProvider {
         displayToUserName.put(displayName.toLowerCase(), userName.toLowerCase());
     }
 
-    public void reloadNicks() {
+    private void reloadNicks() {
         if (nicksFile == null)
             nicksFile = new File(plugin.getDataFolder(), "nicknames.yml");
         nicks = YamlConfiguration.loadConfiguration(nicksFile);
@@ -103,8 +103,7 @@ public final class NicknameProvider {
         return nicks;
     }
 
-    @SuppressWarnings("unchecked")
-    public HashMap<String, String> loadNicks() {
+    HashMap<String, String> loadNicks() {
         HashMap<String, String> hashMap = new HashMap<String, String>();
         for (String user : this.getNickConfig().getKeys(false)) {
             String display = this.getNickConfig().getString(user);

@@ -47,7 +47,7 @@ public final class InternalProvider implements MetaDataProvider {
 
     private HashMap<String, Meta> groups;
     private HashMap<String, Meta> users;
-    private FuzzyChat plugin;
+    private final FuzzyChat plugin;
 
     public InternalProvider(FuzzyChat plugin) {
         this.plugin = plugin;

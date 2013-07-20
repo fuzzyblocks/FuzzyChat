@@ -40,7 +40,7 @@ import org.bukkit.entity.Player;
  */
 public class Whois implements CommandExecutor {
 
-    private NicknameProvider provider;
+    private final NicknameProvider provider;
 
     public Whois(NicknameProvider nicks) {
         provider = nicks;

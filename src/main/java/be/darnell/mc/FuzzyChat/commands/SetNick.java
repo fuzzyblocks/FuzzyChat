@@ -40,7 +40,7 @@ import org.bukkit.entity.Player;
  */
 public class SetNick implements CommandExecutor {
 
-    private NicknameProvider provider;
+    private final NicknameProvider provider;
 
     public SetNick(NicknameProvider nicks) {
         provider = nicks;

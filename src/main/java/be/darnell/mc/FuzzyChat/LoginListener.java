@@ -34,9 +34,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
  *
  * @author LankyLord
  */
-public class LoginListener implements Listener {
+class LoginListener implements Listener {
 
-    private NicknameProvider provider;
+    private final NicknameProvider provider;
 
     public LoginListener(NicknameProvider nicks) {
         provider = nicks;

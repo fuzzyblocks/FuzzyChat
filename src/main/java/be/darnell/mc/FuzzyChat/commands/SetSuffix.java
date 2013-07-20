@@ -39,7 +39,7 @@ import org.bukkit.command.CommandSender;
  */
 public class SetSuffix implements CommandExecutor {
 
-    private MetaDataProvider provider;
+    private final MetaDataProvider provider;
 
     public SetSuffix(MetaDataProvider provider) {
         this.provider = provider;
