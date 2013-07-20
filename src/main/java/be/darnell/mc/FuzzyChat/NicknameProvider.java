@@ -26,13 +26,15 @@
  */
 package be.darnell.mc.FuzzyChat;
 
+import be.darnell.mc.FuzzyChat.utils.Names;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 
 /**
@@ -42,20 +44,21 @@ import java.util.logging.Level;
 public final class NicknameProvider {
 
     private final FuzzyChat plugin;
-    private static HashMap<String, String> userToDisplayName = new HashMap<String, String>();
-    private static final HashMap<String, String> displayToUserName = new HashMap<String, String>();
+    private static BiMap<String, String> displayNames = HashBiMap.create();
     private FileConfiguration nicks = null;
     private File nicksFile = null;
 
     NicknameProvider(FuzzyChat plugin) {
         this.plugin = plugin;
-        userToDisplayName = loadNicks();
-        for (Entry<String, String> entry : userToDisplayName.entrySet())
-            displayToUserName.put(entry.getValue().toLowerCase(), entry.getKey());
+        displayNames = loadNicks();
+    }
+
+    public static BiMap<String, String> getDisplayNames() {
+        return displayNames;
     }
 
     public String getNick(String userName) {
-        String value = userToDisplayName.get(userName.toLowerCase());
+        String value = displayNames.get(Names.expandName(userName).toLowerCase());
         if (value == null)
             return Bukkit.getPlayer(userName).getName();
         else
@@ -63,14 +66,12 @@ public final class NicknameProvider {
     }
 
     public String getUser(String displayName) {
-        return displayToUserName.get(displayName);
+
+        return displayNames.inverse().get(Names.expandDisplayName(displayName));
     }
 
     public void setNick(String userName, String displayName) {
-        if (userToDisplayName.containsKey(userName.toLowerCase()))
-            displayToUserName.remove(getNick(userName.toLowerCase()));
-        userToDisplayName.put(userName.toLowerCase(), displayName);
-        displayToUserName.put(displayName.toLowerCase(), userName.toLowerCase());
+        displayNames.put(userName.toLowerCase(), displayName);
     }
 
     private void reloadNicks() {
@@ -91,8 +92,8 @@ public final class NicknameProvider {
     }
 
     private void addNicksToFile() {
-        for (String user : userToDisplayName.keySet()) {
-            String display = userToDisplayName.get(user);
+        for (String user : displayNames.keySet()) {
+            String display = displayNames.get(user);
             this.getNickConfig().set(user, display);
         }
     }
@@ -103,12 +104,13 @@ public final class NicknameProvider {
         return nicks;
     }
 
-    HashMap<String, String> loadNicks() {
-        HashMap<String, String> hashMap = new HashMap<String, String>();
-        for (String user : this.getNickConfig().getKeys(false)) {
+    BiMap<String, String> loadNicks() {
+        Set<String> users = this.getNickConfig().getKeys(false);
+        HashBiMap<String, String> hashBiMap = HashBiMap.create(users.size());
+        for (String user : users) {
             String display = this.getNickConfig().getString(user);
-            hashMap.put(user, display);
+            hashBiMap.put(user, display);
         }
-        return hashMap;
+        return hashBiMap;
     }
 }

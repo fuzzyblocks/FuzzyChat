@@ -51,7 +51,7 @@ public class Whois implements CommandExecutor {
         if (args.length != 1)
             return false;
         else {
-            String user = provider.getUser(args[0].toLowerCase());
+            String user = provider.getUser(args[0]);
             if(user != null) {
                 Player player = Bukkit.getPlayer(user);
                 String actual = player != null ? player.getName() : user;

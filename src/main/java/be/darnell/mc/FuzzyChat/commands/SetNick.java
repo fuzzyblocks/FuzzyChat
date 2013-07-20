@@ -27,6 +27,7 @@
 package be.darnell.mc.FuzzyChat.commands;
 
 import be.darnell.mc.FuzzyChat.NicknameProvider;
+import be.darnell.mc.FuzzyChat.utils.Names;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -60,7 +61,7 @@ public class SetNick implements CommandExecutor {
             player.sendMessage(ChatColor.AQUA + "Nickname changed to " + nick);
         } else if (args.length == 2) {
             nick = args[1];
-            String target = args[0];
+            String target = Names.expandName(args[0]);
             Player player = Bukkit.getPlayer(target);
             if (player != null) {
                 provider.setNick(target, nick);
