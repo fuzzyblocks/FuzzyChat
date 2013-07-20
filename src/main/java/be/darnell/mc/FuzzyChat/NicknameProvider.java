@@ -50,9 +50,8 @@ public final class NicknameProvider {
     NicknameProvider(FuzzyChat plugin) {
         this.plugin = plugin;
         userToDisplayName = loadNicks();
-        for (Entry<String, String> entry : userToDisplayName.entrySet()) {
+        for (Entry<String, String> entry : userToDisplayName.entrySet())
             displayToUserName.put(entry.getValue().toLowerCase(), entry.getKey());
-        }
     }
 
     public String getNick(String userName) {
@@ -68,27 +67,33 @@ public final class NicknameProvider {
     }
 
     public void setNick(String userName, String displayName) {
-        if(userToDisplayName.containsKey(userName.toLowerCase()))
+        if (userToDisplayName.containsKey(userName.toLowerCase()))
             displayToUserName.remove(getNick(userName.toLowerCase()));
         userToDisplayName.put(userName.toLowerCase(), displayName);
         displayToUserName.put(displayName.toLowerCase(), userName.toLowerCase());
     }
 
     public void reloadNicks() {
-        if (nicksFile == null) {
+        if (nicksFile == null)
             nicksFile = new File(plugin.getDataFolder(), "nicknames.yml");
-        }
         nicks = YamlConfiguration.loadConfiguration(nicksFile);
     }
 
     public void saveNicks() {
-        if(nicks == null || nicksFile == null)
+        if (nicks == null || nicksFile == null)
             return;
         try {
-            nicks.createSection("", userToDisplayName);
+            this.addNicksToFile();
             getNickConfig().save(nicksFile);
         } catch (IOException e) {
-            plugin.getLogger().log(Level.SEVERE, "Could not save nicks to " +  nicksFile, e);
+            plugin.getLogger().log(Level.SEVERE, "Could not save nicks to " + nicksFile, e);
+        }
+    }
+
+    private void addNicksToFile() {
+        for (String user : userToDisplayName.keySet()) {
+            String display = userToDisplayName.get(user);
+            this.getNickConfig().set(user, display);
         }
     }
 
@@ -100,6 +105,11 @@ public final class NicknameProvider {
 
     @SuppressWarnings("unchecked")
     public HashMap<String, String> loadNicks() {
-        return new HashMap(getNickConfig().getValues(false));
+        HashMap<String, String> hashMap = new HashMap<String, String>();
+        for (String user : this.getNickConfig().getKeys(false)) {
+            String display = this.getNickConfig().getString(user);
+            hashMap.put(user, display);
+        }
+        return hashMap;
     }
 }
