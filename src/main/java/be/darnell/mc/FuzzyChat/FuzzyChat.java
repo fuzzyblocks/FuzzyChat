@@ -75,7 +75,6 @@ public class FuzzyChat extends JavaPlugin {
     @Override
     public void onDisable() {
         log.info(this + " stopped.");
-        nickprovider.saveNicks();
     }
 
     public static String getPlayerNameString(String s) {

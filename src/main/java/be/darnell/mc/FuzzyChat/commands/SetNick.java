@@ -70,6 +70,7 @@ public class SetNick implements CommandExecutor {
                 sender.sendMessage(ChatColor.AQUA + player.getName() + "'s nickname changed to " + nick);
             }
         }
+        provider.saveNicksAsync();
         return true;
     }
 }

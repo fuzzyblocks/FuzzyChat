@@ -32,6 +32,7 @@ import com.google.common.collect.HashBiMap;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.*;
 import java.util.Set;
@@ -80,7 +81,16 @@ public final class NicknameProvider {
         nicks = YamlConfiguration.loadConfiguration(nicksFile);
     }
 
-    public void saveNicks() {
+    public void saveNicksAsync() {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new BukkitRunnable() {
+            @Override
+            public void run() {
+                saveNicks();
+            }
+        });
+    }
+
+    private void saveNicks() {
         if (nicks == null || nicksFile == null)
             return;
         try {
