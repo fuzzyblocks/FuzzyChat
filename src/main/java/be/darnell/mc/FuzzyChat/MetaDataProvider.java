@@ -30,12 +30,49 @@ import org.bukkit.OfflinePlayer;
 
 public interface MetaDataProvider {
 
-	public String getPrefix(OfflinePlayer player);
+    /**
+     * Get the prefix of a player
+     * @param player The player to whom the prefix belongs
+     * @return The prefix of the player, if none exists an empty string.
+     */
+    public String getPrefix(OfflinePlayer player);
+
+    /**
+     * Get the suffix of a player
+     * @param player The player to whom the suffix belongs
+     * @return The suffix of the player, if none exists an empty string.
+     */
 	public String getSuffix(OfflinePlayer player);
-	
-	public void setPlayerPrefix(String name, String prefix) throws UnsupportedOperationException;
+
+    /**
+     * Set the prefix of a player
+     * @param name The name of the player
+     * @param prefix The prefix to be applied
+     * @throws UnsupportedOperationException
+     */
+    public void setPlayerPrefix(String name, String prefix) throws UnsupportedOperationException;
+
+    /**
+     * Set the suffix of a player
+     * @param name The name of the player
+     * @param suffix The suffix to be applied
+     * @throws UnsupportedOperationException
+     */
 	public void setPlayerSuffix(String name, String suffix) throws UnsupportedOperationException;
-	
-	public void setGroupPrefix(String name, String prefix) throws UnsupportedOperationException;
+
+    /**
+     * Set the prefix of a group
+     * @param name The name of the group
+     * @param prefix The prefix to be applied
+     * @throws UnsupportedOperationException
+     */
+    public void setGroupPrefix(String name, String prefix) throws UnsupportedOperationException;
+
+    /**
+     * Set the suffix of a group
+     * @param name The name of the group
+     * @param suffix The suffix to be applied
+     * @throws UnsupportedOperationException
+     */
 	public void setGroupSuffix(String name, String suffix) throws UnsupportedOperationException;
 }

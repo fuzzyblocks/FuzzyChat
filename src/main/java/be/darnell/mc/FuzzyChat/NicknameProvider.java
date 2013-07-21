@@ -58,6 +58,11 @@ public final class NicknameProvider {
         return displayNames;
     }
 
+    /**
+     * Get the nickname from a player name
+     * @param userName The name of the player
+     * @return The nickname of the player
+     */
     public String getNick(String userName) {
         String value = displayNames.get(Names.expandName(userName).toLowerCase());
         if (value == null)
@@ -66,11 +71,20 @@ public final class NicknameProvider {
             return value;
     }
 
+    /**
+     * Get the player name from a nickname
+     * @param displayName The nickname
+     * @return The player name
+     */
     public String getUser(String displayName) {
-
         return displayNames.inverse().get(Names.expandDisplayName(displayName));
     }
 
+    /**
+     * Set the nickname of a player
+     * @param userName The player
+     * @param displayName The nickname
+     */
     public void setNick(String userName, String displayName) {
         displayNames.put(userName.toLowerCase(), displayName);
     }
@@ -81,6 +95,9 @@ public final class NicknameProvider {
         nicks = YamlConfiguration.loadConfiguration(nicksFile);
     }
 
+    /**
+     * Save nicknames asynchronously
+     */
     public void saveNicksAsync() {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new BukkitRunnable() {
             @Override
@@ -90,21 +107,21 @@ public final class NicknameProvider {
         });
     }
 
+    /**
+     * Save nicknames to file
+     */
     private void saveNicks() {
         if (nicks == null || nicksFile == null)
             return;
         try {
-            this.addNicksToFile();
+            // Add nicknames to config
+            for (String user : displayNames.keySet()) {
+                String display = displayNames.get(user);
+                this.getNickConfig().set(user, display);
+            }
             getNickConfig().save(nicksFile);
         } catch (IOException e) {
             plugin.getLogger().log(Level.SEVERE, "Could not save nicks to " + nicksFile, e);
-        }
-    }
-
-    private void addNicksToFile() {
-        for (String user : displayNames.keySet()) {
-            String display = displayNames.get(user);
-            this.getNickConfig().set(user, display);
         }
     }
 

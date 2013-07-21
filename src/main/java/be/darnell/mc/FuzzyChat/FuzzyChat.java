@@ -77,6 +77,11 @@ public class FuzzyChat extends JavaPlugin {
         log.info(this + " stopped.");
     }
 
+    /**
+     * Get the name of a player, expand if online
+     * @param s The player to get the name of
+     * @return
+     */
     public static String getPlayerNameString(String s) {
         try {
             return Bukkit.getServer().getPlayer(s).getName();

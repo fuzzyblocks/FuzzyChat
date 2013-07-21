@@ -38,6 +38,10 @@ class LoginListener implements Listener {
 
     private final NicknameProvider provider;
 
+    /**
+     * A login listener that will apply nicknames
+     * @param nicks The nickname provider
+     */
     public LoginListener(NicknameProvider nicks) {
         provider = nicks;
     }
