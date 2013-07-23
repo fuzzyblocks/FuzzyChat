@@ -1,7 +1,7 @@
-name: FuzzyChat
+name: ${name}
 main: be.darnell.mc.FuzzyChat.FuzzyChat
 softdepend: [ FuzzyLog, bPermissions, Privileges ]
-version: 1.0.1
+version: ${version}
 author: cedeel
 description: Chat formatting plugin for Bukkit
 permissions:
