@@ -85,8 +85,16 @@ public final class NicknameProvider {
      * @param userName The player
      * @param displayName The nickname
      */
-    public void setNick(String userName, String displayName) {
-        displayNames.put(userName.toLowerCase(), displayName);
+    public boolean setNick(String userName, String displayName) {
+        if (!displayNames.containsValue(displayNames)) {
+            displayNames.put(userName.toLowerCase(), displayName);
+            return true;
+        }
+        if (displayName.equals("")) {
+            displayNames.remove(userName.toLowerCase());
+            return true;
+        }
+        return false;
     }
 
     private void reloadNicks() {
