@@ -53,7 +53,7 @@ public class SetNick implements CommandExecutor {
             nick = "";
             String target = Names.expandName(args[0]);
             Player player = Bukkit.getPlayer(target);
-            if (provider.setNick(target, nick)) {
+            if (provider.removeNick(target)) {
                 player.setDisplayName(player.getName());
                 player.setPlayerListName(player.getName());
                 sender.sendMessage(ChatColor.AQUA + player.getName() + "'s nickname removed");

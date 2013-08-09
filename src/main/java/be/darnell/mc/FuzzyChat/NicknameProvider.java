@@ -44,8 +44,8 @@ import java.util.logging.Level;
  */
 public final class NicknameProvider {
 
-    private final FuzzyChat plugin;
     private static BiMap<String, String> displayNames = HashBiMap.create();
+    private final FuzzyChat plugin;
     private FileConfiguration nicks = null;
     private File nicksFile = null;
 
@@ -90,8 +90,17 @@ public final class NicknameProvider {
             displayNames.put(userName.toLowerCase(), displayName);
             return true;
         }
-        if (displayName.equals("")) {
+        return false;
+    }
+
+    /**
+     * Remove the nickname of a player
+     * @param userName The player
+     */
+    public boolean removeNick(String userName) {
+        if (displayNames.containsKey(userName.toLowerCase())) {
             displayNames.remove(userName.toLowerCase());
+            getNickConfig().set(userName.toLowerCase(), null);
             return true;
         }
         return false;
