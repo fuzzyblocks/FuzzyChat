@@ -63,7 +63,7 @@ public final class NicknameProvider {
      * @param userName The name of the player
      * @return The nickname of the player
      */
-    public String getNick(String userName) {
+    public static String getNick(String userName) {
         String value = displayNames.get(Names.expandName(userName).toLowerCase());
         if (value == null)
             return Bukkit.getPlayer(userName).getName();
@@ -76,7 +76,7 @@ public final class NicknameProvider {
      * @param displayName The nickname
      * @return The player name
      */
-    public String getUser(String displayName) {
+    public static String getUser(String displayName) {
         return displayNames.inverse().get(Names.expandDisplayName(displayName));
     }
 
@@ -86,7 +86,7 @@ public final class NicknameProvider {
      * @param displayName The nickname
      */
     public boolean setNick(String userName, String displayName) {
-        if (!displayNames.containsValue(displayNames)) {
+        if (!displayNames.containsValue(displayName)) {
             displayNames.put(userName.toLowerCase(), displayName);
             return true;
         }

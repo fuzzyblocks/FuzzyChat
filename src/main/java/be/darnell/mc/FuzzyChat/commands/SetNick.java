@@ -50,7 +50,6 @@ public class SetNick implements CommandExecutor {
         if (args.length < 1 || args.length > 2)
             return false;
         if (args.length == 1) {
-            nick = "";
             String target = Names.expandName(args[0]);
             Player player = Bukkit.getPlayer(target);
             if (provider.removeNick(target)) {

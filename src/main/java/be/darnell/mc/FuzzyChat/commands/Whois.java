@@ -51,11 +51,11 @@ public class Whois implements CommandExecutor {
         if (args.length != 1)
             return false;
         else {
-            String user = provider.getUser(args[0]);
+            String user = NicknameProvider.getUser(args[0]);
             if(user != null) {
                 Player player = Bukkit.getPlayer(user);
                 String actual = player != null ? player.getName() : user;
-                String nick = provider.getNick(user);
+                String nick = NicknameProvider.getNick(user);
                 sender.sendMessage(ChatColor.AQUA + nick + "'s actual name is " + actual);
                 return true;
             } else {

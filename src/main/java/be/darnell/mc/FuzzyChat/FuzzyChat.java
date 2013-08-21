@@ -80,7 +80,7 @@ public class FuzzyChat extends JavaPlugin {
     /**
      * Get the name of a player, expand if online
      * @param s The player to get the name of
-     * @return
+     * @return The player's full name, or the original string if none exists.
      */
     public static String getPlayerNameString(String s) {
         try {

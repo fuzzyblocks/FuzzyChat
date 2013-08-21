@@ -50,7 +50,7 @@ class LoginListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         String player = event.getPlayer().getName();
         String playerlcase = player.toLowerCase();
-        event.getPlayer().setDisplayName(provider.getNick(playerlcase));
-        event.getPlayer().setPlayerListName(provider.getNick(playerlcase));
+        event.getPlayer().setDisplayName(NicknameProvider.getNick(playerlcase));
+        event.getPlayer().setPlayerListName(NicknameProvider.getNick(playerlcase));
     }
 }
