@@ -40,11 +40,7 @@ import org.bukkit.entity.Player;
  */
 public class Whois implements CommandExecutor {
 
-    private final NicknameProvider provider;
-
-    public Whois(NicknameProvider nicks) {
-        provider = nicks;
-    }
+    public Whois() {}
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmnd, String string, String[] args) {

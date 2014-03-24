@@ -27,11 +27,8 @@
 package be.darnell.mc.FuzzyChat;
 
 import be.darnell.mc.FuzzyChat.commands.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -39,8 +36,8 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class FuzzyChat extends JavaPlugin {
 
-    static final Logger log = Logger.getLogger("Minecraft");
     private NicknameProvider nickprovider;
+    private MetaDataProvider metaProvider;
 
     @Override
     public void onEnable() {
@@ -49,53 +46,43 @@ public class FuzzyChat extends JavaPlugin {
         config.addDefaults(getConfig());
         this.saveDefaultConfig();
 
-        // Metadata provider resolution
-        MetaDataProvider provider;
-
-        String pr = config.getString("provider", "internal");
-        if (pr.equalsIgnoreCase("auto"))
-            provider = resolveProvider();
-        else
-            provider = new InternalProvider(this);
+        // Metadata provider
+        metaProvider = new InternalProvider(this);
 
         nickprovider = new NicknameProvider(this);
-        getServer().getPluginManager().registerEvents(new LoginListener(nickprovider), this);
-        getServer().getPluginManager().registerEvents(new FuzzyChatListener(config, provider), this);
-        log.info(this + " started.");
 
+        getServer().getPluginManager().registerEvents(new LoginListener(nickprovider), this);
+        getServer().getPluginManager().registerEvents(new FuzzyChatListener(config, metaProvider), this);
+        getLogger().info(this + " started.");
 
         this.saveConfig();
 
-        this.getCommand("setprefix").setExecutor(new SetPrefix(provider));
-        this.getCommand("setsuffix").setExecutor(new SetSuffix(provider));
-        this.getCommand("setnick").setExecutor(new SetNick(nickprovider));
-        this.getCommand("whois").setExecutor(new Whois(nickprovider));
+        registerCommands();
     }
 
     @Override
     public void onDisable() {
-        log.info(this + " stopped.");
+        getLogger().info(this + " stopped.");
     }
 
     /**
      * Get the name of a player, expand if online
-     * @param s The player to get the name of
+     * @param playerName The player to get the name of
      * @return The player's full name, or the original string if none exists.
      */
-    public static String getPlayerNameString(String s) {
+    public static String getPlayerNameString(String playerName) {
         try {
-            return Bukkit.getServer().getPlayer(s).getName();
-        } catch (NullPointerException e) {
+            return Bukkit.getServer().getPlayer(playerName).getName();
+        } catch (NullPointerException ignored) {
             // Player not online.
         }
-        return s;
+        return playerName;
     }
 
-    private MetaDataProvider resolveProvider() {
-        Plugin bp = getServer().getPluginManager().getPlugin("bPermissions");
-        if (bp != null && bp.isEnabled())
-            return new BananaProvider();
-        log.log(Level.WARNING, "[FuzzyChat] No supported external metadata provider found. Falling back to internal.");
-        return new InternalProvider(this);
+    private void registerCommands() {
+        this.getCommand("setprefix").setExecutor(new SetPrefix(metaProvider));
+        this.getCommand("setsuffix").setExecutor(new SetSuffix(metaProvider));
+        this.getCommand("setnick").setExecutor(new SetNick(nickprovider));
+        this.getCommand("whois").setExecutor(new Whois());
     }
 }
