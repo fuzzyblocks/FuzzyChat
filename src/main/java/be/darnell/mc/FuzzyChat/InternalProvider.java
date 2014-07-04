@@ -26,33 +26,39 @@
  */
 package be.darnell.mc.FuzzyChat;
 
-import de.bananaco.bpermissions.api.ApiLayer;
-import de.bananaco.bpermissions.api.util.CalculableType;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
-import net.krinsoft.privileges.Privileges;
-import org.bukkit.Bukkit;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 public final class InternalProvider implements MetaDataProvider {
 
     private HashMap<String, Meta> groups;
     private HashMap<String, Meta> users;
+    private Permission perm;
     private final FuzzyChat plugin;
 
     public InternalProvider(FuzzyChat plugin) {
         this.plugin = plugin;
+        setupVault();
         loadGroups();
         loadUsers();
+    }
+
+    private void setupVault() {
+        if (plugin.getServer().getPluginManager().getPlugin("Vault") == null) {
+            plugin.getLogger().severe("Disabled due to no Vault dependency found!");
+            plugin.getServer().getPluginManager().disablePlugin(plugin);
+            return;
+        }
+        RegisteredServiceProvider<Permission> rsp = plugin.getServer().getServicesManager().getRegistration(Permission.class);
+        perm = rsp.getProvider();
     }
 
     @Override
@@ -145,21 +151,8 @@ public final class InternalProvider implements MetaDataProvider {
         saveGroups();
     }
 
-    private String getUserGroup(OfflinePlayer p) {
-        Plugin bp = plugin.getServer().getPluginManager().getPlugin("bPermissions");
-        Plugin privileges = plugin.getServer().getPluginManager().getPlugin("Privileges");
-        if (bp != null && bp.isEnabled()) {
-            try {
-                Player pl = Bukkit.getPlayer(p.getName());
-                return ApiLayer.getGroups(pl.getWorld().getName(), CalculableType.USER, p.getName())[0];
-            } catch (NullPointerException ignored) {
-            }
-            return ApiLayer.getGroups(Bukkit.getWorlds().get(0).getName(), CalculableType.USER, p.getName())[0];
-
-        }
-        if (privileges != null && privileges.isEnabled())
-            return ((Privileges) privileges).getGroupManager().getGroup(p).getName();
-        return "default";
+    private String getUserGroup(OfflinePlayer player) {
+        return perm.getPrimaryGroup(plugin.getServer().getWorlds().get(0), player.getName());
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -170,12 +163,12 @@ public final class InternalProvider implements MetaDataProvider {
             try {
                 usersFile.createNewFile();
             } catch (IOException e) {
-                FuzzyChat.log.log(Level.SEVERE, "[FuzzyChat] Could not create users.yml file.");
+                plugin.getLogger().severe("Could not create users.yml file.");
                 return;
             }
 
         }
-        users = new HashMap<String, Meta>();
+        users = new HashMap<>();
         YamlConfiguration usersConfig = YamlConfiguration.loadConfiguration(usersFile);
         try {
             ConfigurationSection userConfig = usersConfig.getConfigurationSection("users");
@@ -184,7 +177,7 @@ public final class InternalProvider implements MetaDataProvider {
                 users.put(user.toLowerCase(), new Meta(meta.getString("prefix", ""), meta.getString("suffix", "")));
             }
         } catch (NullPointerException e) {
-            plugin.getLogger().log(Level.WARNING, "[FuzzyChat] Users file empty. No groups loaded.");
+            plugin.getLogger().warning("Users file empty. No groups loaded.");
         }
     }
 
@@ -196,12 +189,12 @@ public final class InternalProvider implements MetaDataProvider {
             try {
                 groupsFile.createNewFile();
             } catch (IOException e) {
-                FuzzyChat.log.log(Level.SEVERE, "[FuzzyChat] Could not create groups.yml file.");
+                plugin.getLogger().severe("Could not create groups.yml file.");
                 return;
             }
 
         }
-        groups = new HashMap<String, Meta>();
+        groups = new HashMap<>();
         YamlConfiguration groupsConfig = YamlConfiguration.loadConfiguration(groupsFile);
         try {
             ConfigurationSection groupConfig = groupsConfig.getConfigurationSection("groups");
@@ -210,7 +203,7 @@ public final class InternalProvider implements MetaDataProvider {
                 groups.put(group.toLowerCase(), new Meta(meta.getString("prefix", ""), meta.getString("suffix", "")));
             }
         } catch (NullPointerException e) {
-            plugin.getLogger().log(Level.WARNING, "[FuzzyChat] Groups file empty. No groups loaded.");
+            plugin.getLogger().warning("Groups file empty. No groups loaded.");
         }
     }
 
@@ -226,7 +219,7 @@ public final class InternalProvider implements MetaDataProvider {
         try {
             fc.save(usersFile);
         } catch (IOException e) {
-            FuzzyChat.log.log(Level.SEVERE, "[FuzzyChat] Failed to write to users.yml. Changes not saved!");
+            plugin.getLogger().severe("Failed to write to users.yml. Changes not saved!");
         }
     }
 
@@ -242,7 +235,7 @@ public final class InternalProvider implements MetaDataProvider {
         try {
             fc.save(groupsFile);
         } catch (IOException e) {
-            FuzzyChat.log.log(Level.SEVERE, "[FuzzyChat] Failed to write to groups.yml. Changes not saved!");
+            plugin.getLogger().severe("Failed to write to groups.yml. Changes not saved!");
         }
     }
 }

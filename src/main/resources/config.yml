@@ -1,5 +1,4 @@
 message-format: '%prefix %player %suffix§f> %message'
-provider: internal
 log: console
 log-color: false
 useLogger: false
