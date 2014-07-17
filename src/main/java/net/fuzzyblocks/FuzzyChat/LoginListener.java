@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package be.darnell.mc.FuzzyChat;
+package net.fuzzyblocks.FuzzyChat;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -48,9 +48,8 @@ class LoginListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        String player = event.getPlayer().getName();
-        String playerlcase = player.toLowerCase();
-        event.getPlayer().setDisplayName(NicknameProvider.getNick(playerlcase));
-        event.getPlayer().setPlayerListName(NicknameProvider.getNick(playerlcase));
+        String playerName = event.getPlayer().getName();
+        event.getPlayer().setDisplayName(NicknameProvider.getNick(playerName));
+        event.getPlayer().setPlayerListName(NicknameProvider.getNick(playerName));
     }
 }

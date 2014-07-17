@@ -1,5 +1,5 @@
 name: ${name}
-main: be.darnell.mc.FuzzyChat.FuzzyChat
+main: net.fuzzyblocks.FuzzyChat.FuzzyChat
 depends: [ Vault ]
 softdepend: [ FuzzyLog ]
 version: ${version}

@@ -24,10 +24,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package be.darnell.mc.FuzzyChat.commands;
+package net.fuzzyblocks.FuzzyChat.commands;
 
-import be.darnell.mc.FuzzyChat.FuzzyChat;
-import be.darnell.mc.FuzzyChat.MetaDataProvider;
+import net.fuzzyblocks.FuzzyChat.FuzzyChat;
+import net.fuzzyblocks.FuzzyChat.MetaDataProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

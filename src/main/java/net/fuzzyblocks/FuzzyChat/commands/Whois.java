@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 LankyLord.
+ * Copyright (c) 2013 LankyLord & Cedeel.
  * All rights reserved.
  *
  *
@@ -24,10 +24,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package be.darnell.mc.FuzzyChat.commands;
+package net.fuzzyblocks.FuzzyChat.commands;
 
-import be.darnell.mc.FuzzyChat.NicknameProvider;
-import be.darnell.mc.FuzzyChat.utils.Names;
+import net.fuzzyblocks.FuzzyChat.NicknameProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -35,45 +34,31 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-/** @author LankyLord */
-public class SetNick implements CommandExecutor {
+/**
+ *
+ * @author LankyLord
+ */
+public class Whois implements CommandExecutor {
 
-    private final NicknameProvider provider;
-
-    public SetNick(NicknameProvider nicks) {
-        provider = nicks;
-    }
+    public Whois() {}
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        String nick;
-        if (args.length < 1 || args.length > 2)
+    public boolean onCommand(CommandSender sender, Command cmnd, String string, String[] args) {
+        if (args.length != 1)
             return false;
-        if (args.length == 1) {
-            String target = Names.expandName(args[0]);
-            Player player = Bukkit.getPlayer(target);
-            if (provider.removeNick(target)) {
-                player.setDisplayName(player.getName());
-                player.setPlayerListName(player.getName());
-                sender.sendMessage(ChatColor.AQUA + player.getName() + "'s nickname removed");
+        else {
+            String user = NicknameProvider.getUser(args[0]);
+            if(user != null) {
+                Player player = Bukkit.getPlayer(user);
+                String actual = player != null ? player.getName() : user;
+                String nick = NicknameProvider.getNick(user);
+                sender.sendMessage(ChatColor.AQUA + nick + "'s actual name is " + actual);
+                return true;
             } else {
-                sender.sendMessage(ChatColor.RED + "Failed to remove nickname, are you sure you spelt it correctly?");
+                sender.sendMessage(ChatColor.RED + "User doesn't have a nickname");
+                return false;
             }
-        } else if (args.length == 2) {
-            nick = args[1];
-            String target = Names.expandName(args[0]);
-            Player player = Bukkit.getPlayer(target);
-            if (player != null) {
-                if (provider.setNick(target, nick)) {
-                    player.setDisplayName(nick);
-                    player.setPlayerListName(nick);
-                    sender.sendMessage(ChatColor.AQUA + player.getName() + "'s nickname changed to " + nick);
-                } else {
-                    sender.sendMessage(ChatColor.RED + "Failed to set nickname, is there someone else with that nickname?");
-                }
-            }
+
         }
-        provider.saveNicksAsync();
-        return true;
     }
 }

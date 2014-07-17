@@ -24,9 +24,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package be.darnell.mc.FuzzyChat;
+package net.fuzzyblocks.FuzzyChat;
 
-import be.darnell.mc.FuzzyChat.utils.Names;
+import net.fuzzyblocks.FuzzyChat.utils.Names;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.bukkit.Bukkit;

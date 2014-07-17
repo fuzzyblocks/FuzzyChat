@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package be.darnell.mc.FuzzyChat;
+package net.fuzzyblocks.FuzzyChat;
 
 import java.io.File;
 import java.io.IOException;
@@ -88,7 +88,6 @@ public final class InternalProvider implements MetaDataProvider {
             return groups.get(getUserGroup(player).toLowerCase()).suffix;
 
         return "";
-
     }
 
     class Meta {

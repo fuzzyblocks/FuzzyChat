@@ -24,9 +24,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package be.darnell.mc.FuzzyChat;
+package net.fuzzyblocks.FuzzyChat;
 
-import be.darnell.mc.FuzzyChat.commands.*;
+import net.fuzzyblocks.FuzzyChat.commands.*;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -72,6 +72,7 @@ public class FuzzyChat extends JavaPlugin {
      */
     public static String getPlayerNameString(String playerName) {
         try {
+            //noinspection deprecation
             return Bukkit.getServer().getPlayer(playerName).getName();
         } catch (NullPointerException ignored) {
             // Player not online.

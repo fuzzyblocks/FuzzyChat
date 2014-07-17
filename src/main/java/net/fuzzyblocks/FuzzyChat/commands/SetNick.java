@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2013 cedeel.
+ * Copyright (c) 2013 LankyLord.
  * All rights reserved.
- * 
- * 
+ *
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -12,7 +12,7 @@
  *       documentation and/or other materials provided with the distribution.
  *     * The name of the author may not be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,72 +24,56 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package be.darnell.mc.FuzzyChat.commands;
+package net.fuzzyblocks.FuzzyChat.commands;
 
-import be.darnell.mc.FuzzyChat.FuzzyChat;
-import be.darnell.mc.FuzzyChat.MetaDataProvider;
+import net.fuzzyblocks.FuzzyChat.NicknameProvider;
+import net.fuzzyblocks.FuzzyChat.utils.Names;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
-/**
- * @author cedeel
- */
-public class SetPrefix implements CommandExecutor {
+/** @author LankyLord */
+public class SetNick implements CommandExecutor {
 
-    private final MetaDataProvider provider;
+    private final NicknameProvider provider;
 
-    public SetPrefix(MetaDataProvider meta) {
-        provider = meta;
+    public SetNick(NicknameProvider nicks) {
+        provider = nicks;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (args.length < 1)
+        String nick;
+        if (args.length < 1 || args.length > 2)
             return false;
-
-        String name, metadata;
-
-        // Setting a group prefix
-        if (args.length > 1 && args[0].equalsIgnoreCase("-g")) {
-            name = args[1];
-
-            StringBuilder ms = new StringBuilder();
-            for (int i = 2; i < args.length; i++) {
-                ms.append(args[i]).append(" ");
+        if (args.length == 1) {
+            String target = Names.expandName(args[0]);
+            Player player = Bukkit.getPlayer(target);
+            if (provider.removeNick(target)) {
+                player.setDisplayName(player.getName());
+                player.setPlayerListName(player.getName());
+                sender.sendMessage(ChatColor.AQUA + player.getName() + "'s nickname removed");
+            } else {
+                sender.sendMessage(ChatColor.RED + "Failed to remove nickname, are you sure you spelt it correctly?");
             }
-            metadata = ms.toString().trim();
-
-            provider.setGroupPrefix(name, metadata);
-
-            return true;
-        } // Setting a user prefix
-        else {
-            name = FuzzyChat.getPlayerNameString(args[0]);
-
-            try {
-                if (args.length == 1) {
-                    provider.setPlayerPrefix(name, "");
-                    sender.sendMessage(name + "'s prefix removed successfully.");
-                    return true;
+        } else if (args.length == 2) {
+            nick = args[1];
+            String target = Names.expandName(args[0]);
+            Player player = Bukkit.getPlayer(target);
+            if (player != null) {
+                if (provider.setNick(target, nick)) {
+                    player.setDisplayName(nick);
+                    player.setPlayerListName(nick);
+                    sender.sendMessage(ChatColor.AQUA + player.getName() + "'s nickname changed to " + nick);
+                } else {
+                    sender.sendMessage(ChatColor.RED + "Failed to set nickname, is there someone else with that nickname?");
                 }
-
-                StringBuilder ms = new StringBuilder();
-                for (int i = 1; i < args.length; i++) {
-                    ms.append(args[i]).append(" ");
-                }
-                metadata = ms.toString().trim();
-                provider.setPlayerPrefix(name, metadata);
-                sender.sendMessage(name + "'s prefix set to: " + ChatColor.translateAlternateColorCodes('&',
-                        provider.getPrefix(Bukkit.getServer().getOfflinePlayer(name))));
-            } catch (UnsupportedOperationException e) {
-                sender.sendMessage("Operation not supported with current backend.");
-                return false;
             }
-
-            return true;
         }
+        provider.saveNicksAsync();
+        return true;
     }
 }
